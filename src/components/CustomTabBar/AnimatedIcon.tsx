@@ -1,4 +1,4 @@
-import { View, Text } from "react-native";
+import { View, Text, Platform } from "react-native";
 import React from "react";
 import Animated, {
   useAnimatedReaction,
@@ -33,7 +33,7 @@ export const AnimatedIcon: React.FC<AnimatedIconProps> = ({
     () => focused,
     () => {
       if (focused) {
-        scaleIconFocused.value = withSequence(withSpring(1.4), withSpring(1.1));
+        scaleIconFocused.value = Platform.OS === "android"  ?withSequence(withSpring(1.4), withSpring(1.1)) : 1;
         scaleIconUnFocused.value = withSpring(1);
         opacityFocused.value = withTiming(1);
         opacityUnFocused.value = withTiming(0);

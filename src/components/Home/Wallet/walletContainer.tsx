@@ -1,8 +1,18 @@
-import { View, Text } from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
+import ReactNativeHapticFeedback from "react-native-haptic-feedback";
 
 export const WalletContainer = () => {
+
+  const vibrateAnimatedEnd = () => {
+    const options = {
+      enableVibrateFallback: true,
+      ignoreAndroidSystemSettings: false,
+    };
+    ReactNativeHapticFeedback.trigger("soft", options);
+  };
+
   return (
-    <View
+    <TouchableOpacity
       style={{
         backgroundColor: "#00000083",
         padding: 10,
@@ -25,9 +35,7 @@ export const WalletContainer = () => {
       >
         <Text style={{ fontSize: 30, includeFontPadding: false }}>😎</Text>
       </View>
-      <View
-        style={{ flex: 1, marginLeft: 10 }}
-      >
+      <View style={{ flex: 1, marginLeft: 10 }}>
         <Text style={{ color: "white", fontFamily: "satoshi-black" }}>
           0.0123 SOL
         </Text>
@@ -43,6 +51,6 @@ export const WalletContainer = () => {
           0x4jsjlasljalsjpalpasasssdddddddddd
         </Text>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };

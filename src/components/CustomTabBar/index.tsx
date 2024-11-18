@@ -6,6 +6,7 @@ import Animated, {
   useAnimatedReaction,
   useAnimatedStyle,
   useSharedValue,
+  withDelay,
   withSpring,
   withTiming,
 } from "react-native-reanimated";
@@ -18,11 +19,14 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import {
   BottomTabBarProps,
   createBottomTabNavigator,
+  useBottomTabBarHeight,
 } from "@react-navigation/bottom-tabs";
 import { Theme } from "../../constants/Theme";
 import { PlatformPressable } from "@react-navigation/elements";
 import ReactNativeHapticFeedback from "react-native-haptic-feedback";
 import { BlurView } from "expo-blur";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useHideTabBar } from "../../store";
 
 export default function CustomTabBar({
   state,
@@ -32,7 +36,10 @@ export default function CustomTabBar({
   const { colors } = useTheme();
   const { buildHref } = useLinkBuilder();
   const refs = useRef<(View | null)[]>([]);
-  const { width: windowWidth } = useWindowDimensions();
+
+  const { bottom } = useSafeAreaInsets();
+  console.log("🚀 ~ file: index.tsx:39 ~ height:", bottom);
+
   const [position, setPosition] = React.useState<
     {
       x: number;
@@ -43,7 +50,6 @@ export default function CustomTabBar({
       pageY: number;
     }[]
   >([]);
-  console.log("🚀 ~ file: Main.tsx:23 ~ MyTabBar ~ position:", position);
 
   const vibrateAnimatedEnd = () => {
     const options = {
@@ -67,6 +73,7 @@ export default function CustomTabBar({
   }, [refs.current]);
 
   const x = useSharedValue(0);
+  const y = useSharedValue(0);
   const width = useSharedValue(0);
   const focusedIndex = state.index;
   const indicatorStyle = useAnimatedStyle(() => {
@@ -81,50 +88,78 @@ export default function CustomTabBar({
     () => position,
     () => {
       if (position.length) {
+        console.log("a", position[focusedIndex].y);
         const indicatorWidth = position[focusedIndex].width / 3;
         const indicatorX =
           position[focusedIndex].x +
           position[focusedIndex].width / 2 -
-          indicatorWidth / 2;
+          indicatorWidth / 2 -
+          (Platform.OS === "ios" ? 5 : 0);
+
         x.value = withSpring(indicatorX);
         width.value = withTiming(indicatorWidth);
       }
     }
   );
+
+  const tabBarY = useSharedValue(80);
+  const tabBarAnimStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{ translateY: tabBarY.value }],
+    };
+  });
+
   return (
     <View
-      style={{
-        flexDirection: "row",
-        height: Platform.OS === "ios" ? 90 : 60,
-        backgroundColor: "#00000000",
-        // borderTopRightRadius: 20,
-        // borderTopLeftRadius: 20,
-        overflow:"hidden",
-      
-        borderTopColor:"#2E2E2EFF",
-        borderLeftColor:"#2E2E2EFF",
-        borderRightColor:"#2E2E2EFF",
-        
-        position: "absolute",
-        bottom: 0,
-        width: "100%",
-      }}
+      style={[
+        {
+          flexDirection: "row",
+          height: Platform.OS === "ios" ? 24 * 4 : 24 * 2.4,
+          backgroundColor: "#00000075",
+          // borderTopRightRadius: 20,
+          // borderTopLeftRadius: 20,
+          paddingBottom: bottom,
+          overflow: "hidden",
+
+          borderTopColor: "#2E2E2EFF",
+          borderLeftColor: "#2E2E2EFF",
+          borderRightColor: "#2E2E2EFF",
+
+          position: "absolute",
+          bottom: 0,
+          width: "100%",
+        },
+      ]}
     >
-      <BlurView style={{width:"100%",height:"100%", position:"absolute"}} experimentalBlurMethod="dimezisBlurView" intensity={70} tint="dark" />
+      {/* <BlurView
+        style={{ width: "100%", height: 600 ,position: "absolute" }}
+        experimentalBlurMethod="dimezisBlurView"
+        intensity={100}
+        tint="dark"
+      /> */}
       <Animated.View
         style={[
           {
             width: "100%",
-            borderBottomLeftRadius: 10,
-            borderBottomRightRadius: 10,
-            backgroundColor: Theme.colors.icon,
+            borderRadius: 20,
+            top: 4,
             position: "absolute",
             zIndex: 100,
-            height: 5,
+            justifyContent: "center",
+            alignItems: "center",
           },
           indicatorStyle,
         ]}
-      />
+      >
+        <View
+          style={{
+            width: 10,
+            height: 10,
+            borderRadius: 5,
+            backgroundColor: "#F45E00FF",
+          }}
+        />
+      </Animated.View>
       {state.routes.map((route, index) => {
         const { options } = descriptors[route.key];
         const label: any =
@@ -178,7 +213,7 @@ export default function CustomTabBar({
               android_ripple={{ color: "transparent" }}
               accessibilityLabel={options.tabBarAccessibilityLabel}
               testID={options.tabBarButtonTestID}
-             onTouchStart={vibrateAnimatedEnd}
+              onTouchStart={vibrateAnimatedEnd}
               onPress={onPress}
               onLongPress={onLongPress}
               style={{

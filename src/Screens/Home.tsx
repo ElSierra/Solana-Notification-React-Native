@@ -1,4 +1,10 @@
-import { View, Text, StyleSheet, useWindowDimensions } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  useWindowDimensions,
+  Platform,
+} from "react-native";
 import React, { useEffect } from "react";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { Image } from "react-native";
@@ -6,7 +12,6 @@ import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import {
   Canvas,
   Rect,
-  LinearGradient,
   Skia,
   Shader,
   vec,
@@ -20,23 +25,21 @@ import {
   Blur,
   DisplacementMap,
   SweepGradient,
+  Paint,
 } from "@shopify/react-native-skia";
-import { Default } from "../components/Home/Emojis/Default";
-import { Pulse } from "../components/Home/Pulse";
-import Animated, {
-  useAnimatedReaction,
-  useDerivedValue,
-  useSharedValue,
-  withRepeat,
-  withTiming,
-  ZoomIn,
-  ZoomOut,
-} from "react-native-reanimated";
+import { LinearGradient } from "expo-linear-gradient";
 import ReactNativeHapticFeedback from "react-native-haptic-feedback";
 import { WalletContainer } from "../components/Home/Wallet/walletContainer";
 import { Theme } from "../constants/Theme";
 import { FlatList } from "react-native";
 import AddWallet from "../components/Home/Wallet/AddWallet";
+import { List } from "../components/Home/List";
+import Animated, {
+  interpolate,
+  useAnimatedReaction,
+  useAnimatedStyle,
+  useSharedValue,
+} from "react-native-reanimated";
 
 export default function Home() {
   const bottomTabHeight = useBottomTabBarHeight();
@@ -45,7 +48,30 @@ export default function Home() {
     bottomTabHeight
   );
   const { height, width } = useWindowDimensions();
+  const offsetY = useSharedValue(0);
+  const offsetHeight = useSharedValue(0);
+  useAnimatedReaction(
+    () => offsetY.value,
+    (value) => {
+      console.log("🚀 ~ file: Home.tsx:24 ~ Home ~ value", value);
+    },
+    [offsetY]
+  );
 
+  const solAnimStyle = useAnimatedStyle(() => {
+    return {
+      transform: [
+        {
+          translateY: interpolate(
+            offsetY.value,
+            [0, offsetHeight.value],
+            [0, -[offsetHeight.value / 18]],
+            "clamp"
+          ),
+        },
+      ],
+    };
+  });
   return (
     <View style={{ flex: 1 }}>
       <View
@@ -58,27 +84,29 @@ export default function Home() {
         }}
       >
         <Canvas style={{ flex: 1 }}>
-          <Group>
-            <Rect x={0} y={0} width={width} height={height + 40}>
-              <SweepGradient
-                c={vec(width / 3, height / 2)}
-             
-                colors={["#232323FF", "#11013800","purple","green"]}
-              />
-            </Rect>
-      
-        
+          <Group dither >
+            <RadialGradient
+              c={vec(width / 3, height)}
+              r={900}
+              colors={["#00000094", "#01272AFF"]}
+            />
+
+            <Rect x={0} y={0} width={width} height={height + 40} />
+            <Fill color="#00000027" />
           </Group>
         </Canvas>
       </View>
-      <View
-        style={{
-          width: "100%",
-          justifyContent: "center",
-          alignItems: "center",
-          marginTop: 40,
-          height: height / 4,
-        }}
+      <Animated.View
+        style={[
+          {
+            width: "100%",
+            justifyContent: "center",
+            alignItems: "center",
+
+            height: height / 3,
+          },
+          solAnimStyle,
+        ]}
       >
         <Text
           style={{ fontFamily: "satoshi-bold", color: "white", fontSize: 14 }}
@@ -90,15 +118,8 @@ export default function Home() {
         >
           0.0000 SOL
         </Text>
-      </View>
-
-      <FlatList
-        fadingEdgeLength={100}
-        contentContainerStyle={{ padding: 10, gap: 10, paddingBottom: 80 }}
-        data={[1, 2, 3, 45, 6, 7, 8, 9, 0]}
-        ListFooterComponent={() => <AddWallet />}
-        renderItem={({ item }) => <WalletContainer />}
-      />
+      </Animated.View>
+      <List offsetY={offsetY} offsetHeight={offsetHeight} />
     </View>
   );
 }
@@ -126,5 +147,25 @@ const styles = StyleSheet.create({
     backgroundColor: "transparent",
     fontSize: 15,
     color: "#fff",
+  },
+  listContainer: {
+    flex: 1,
+    width: "100%",
+  },
+  gradientBottom: {
+    position: "absolute",
+    bottom: 10,
+    left: 0,
+    right: 0,
+    height: 40,
+    zIndex: 999,
+  },
+  gradientTop: {
+    position: "absolute",
+    top: 10,
+    left: 0,
+    right: 0,
+    height: 40,
+    zIndex: 999,
   },
 });

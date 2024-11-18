@@ -97,33 +97,33 @@ const MyTabs = createBottomTabNavigator({
       },
       screen: Explore,
     },
-    Likes: {
-      options: {
-        tabBarIcon: ({ color, size, focused }) => (
-          <AnimatedIcon
-            focused={focused}
-            size={size}
-            FocusedIcon={LikeIconFocused}
-            UnfocusedIcon={LikeIconUnfocused}
-          />
-        ),
-      },
-      screen: Likes,
-    },
+    // Likes: {
+    //   options: {
+    //     tabBarIcon: ({ color, size, focused }) => (
+    //       <AnimatedIcon
+    //         focused={focused}
+    //         size={size}
+    //         FocusedIcon={LikeIconFocused}
+    //         UnfocusedIcon={LikeIconUnfocused}
+    //       />
+    //     ),
+    //   },
+    //   screen: Likes,
+    // },
 
-    Profile: {
-      options: {
-        tabBarIcon: ({ color, size, focused }) => (
-          <AnimatedIcon
-            focused={focused}
-            size={size}
-            FocusedIcon={ProfileIconFocused}
-            UnfocusedIcon={ProfileIconUnfocused}
-          />
-        ),
-      },
-      screen: Profile,
-    },
+    // Profile: {
+    //   options: {
+    //     tabBarIcon: ({ color, size, focused }) => (
+    //       <AnimatedIcon
+    //         focused={focused}
+    //         size={size}
+    //         FocusedIcon={ProfileIconFocused}
+    //         UnfocusedIcon={ProfileIconUnfocused}
+    //       />
+    //     ),
+    //   },
+    //   screen: Profile,
+    // },
   },
 });
 const RootStack = createNativeStackNavigator({
@@ -157,12 +157,12 @@ export default function Main() {
 
   // callbacks
   const handlePresentModalPress = useCallback(() => {
-    bottomSheetModalRef.current?.present();
+    bottomSheetModalRef.current?.snapToIndex(1);
   }, []);
 
   useEffect(() => {
     if (bottomSheetState) {
-      handlePresentModalPress();
+      bottomSheetModalRef.current?.present();
     }
   }, [bottomSheetState]);
 

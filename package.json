@@ -18,6 +18,7 @@
     "@react-navigation/native-stack": "^7.0.0-rc.29",
     "@shopify/react-native-skia": "1.5.3",
     "babel-plugin-react-compiler": "^19.0.0-beta-a7bf2bd-20241110",
+    "babel-plugin-transform-remove-console": "^6.9.4",
     "expo": "~52.0.7",
     "expo-blur": "~14.0.1",
     "expo-font": "~13.0.1",
@@ -25,6 +26,7 @@
     "expo-splash-screen": "~0.29.11",
     "expo-status-bar": "~2.0.0",
     "expo-system-ui": "~4.0.3",
+    "lodash": "^4.17.21",
     "react": "18.3.1",
     "react-compiler-runtime": "^19.0.0-beta-a7bf2bd-20241110",
     "react-dom": "18.3.1",
@@ -40,6 +42,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
+    "@types/lodash": "^4.17.13",
     "@types/react": "~18.3.12",
     "typescript": "^5.3.3"
   },

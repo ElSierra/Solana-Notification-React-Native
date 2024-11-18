@@ -20,18 +20,16 @@ import { useModalState } from "../../store";
 type CustomBottomSheetProps = {
   bottomSheetModalRef: React.RefObject<BottomSheetModal>;
   animatedPosition: SharedValue<number>;
- 
+
   // add your custom props here
 };
 export const CustomBottomSheet: React.FC<CustomBottomSheetProps> = ({
   bottomSheetModalRef,
   animatedPosition,
-
 }) => {
   const { height } = useWindowDimensions();
   const { top } = useSafeAreaInsets();
-  const percentage =
-    Platform.OS === "ios" ? ((height - top) / height) * 100 - 2 : "94.5";
+  const percentage = Platform.OS === "ios" ? "90.5" : "94";
   console.log("🚀 ~ file: bottomSheet.tsx:27 ~ percentage:", percentage);
 
   console.log("🚀 ~ file: bottomSheet.tsx:26 ~ top:", top, height);
@@ -42,7 +40,7 @@ export const CustomBottomSheet: React.FC<CustomBottomSheetProps> = ({
       <>
         <BottomSheetBackdrop
           {...props}
-          opacity={1}
+          opacity={0.4}
           pressBehavior={"close"}
           disappearsOnIndex={-1}
           appearsOnIndex={2}
@@ -87,7 +85,6 @@ export const CustomBottomSheet: React.FC<CustomBottomSheetProps> = ({
       }}
       ref={bottomSheetModalRef}
       index={1}
-    
       backgroundComponent={CustomBackground}
       handleIndicatorStyle={{ display: "none" }}
       animatedPosition={animatedPosition}
@@ -96,7 +93,7 @@ export const CustomBottomSheet: React.FC<CustomBottomSheetProps> = ({
       backdropComponent={renderBackdrop}
     >
       <BottomSheetView style={styles.contentContainer}>
-        <Text>Awesome 🎉</Text>
+        <Text style={{color:"white"}}>Awesome 🎉</Text>
       </BottomSheetView>
     </BottomSheetModal>
   );
