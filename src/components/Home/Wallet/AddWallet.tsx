@@ -2,7 +2,7 @@ import { View, Text, Pressable } from "react-native";
 import React from "react";
 import { AddIcon } from "../../global/icons";
 import { useNavigation } from "@react-navigation/native";
-import { useModalState } from "../../../store";
+import { useAddWalletBottomSheet } from "../../../store/ui";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, {
   runOnJS,
@@ -13,7 +13,7 @@ import Animated, {
 import ReactNativeHapticFeedback from "react-native-haptic-feedback";
 export default function AddWallet() {
   const navigation = useNavigation();
-  const toggleState = useModalState((state) => state.toggle);
+  const toggleState = useAddWalletBottomSheet((state) => state.toggle);
   const vibrateAnimatedEnd = () => {
     const options = {
       enableVibrateFallback: true,

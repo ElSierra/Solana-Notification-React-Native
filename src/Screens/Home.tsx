@@ -50,13 +50,7 @@ export default function Home() {
   const { height, width } = useWindowDimensions();
   const offsetY = useSharedValue(0);
   const offsetHeight = useSharedValue(0);
-  useAnimatedReaction(
-    () => offsetY.value,
-    (value) => {
-      console.log("🚀 ~ file: Home.tsx:24 ~ Home ~ value", value);
-    },
-    [offsetY]
-  );
+
 
   const solAnimStyle = useAnimatedStyle(() => {
     return {
@@ -105,7 +99,7 @@ export default function Home() {
 
             height: height / 3,
           },
-          solAnimStyle,
+          // solAnimStyle,
         ]}
       >
         <Text

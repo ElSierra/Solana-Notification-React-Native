@@ -26,7 +26,8 @@ import { PlatformPressable } from "@react-navigation/elements";
 import ReactNativeHapticFeedback from "react-native-haptic-feedback";
 import { BlurView } from "expo-blur";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useHideTabBar } from "../../store";
+import { useHideTabBar } from "../../store/ui";
+import { LinearGradient } from "expo-linear-gradient";
 
 export default function CustomTabBar({
   state,
@@ -115,7 +116,7 @@ export default function CustomTabBar({
         {
           flexDirection: "row",
           height: Platform.OS === "ios" ? 24 * 4 : 24 * 2.4,
-          backgroundColor: "#00000075",
+          backgroundColor: "#00000000",
           // borderTopRightRadius: 20,
           // borderTopLeftRadius: 20,
           paddingBottom: bottom,
@@ -131,6 +132,17 @@ export default function CustomTabBar({
         },
       ]}
     >
+      <LinearGradient
+          colors={["rgba(255,255,255,0)", "rgba(255,255,255,0.2)"]}
+          style={{
+            position: "absolute",
+            bottom: 0,
+            left: 0,
+            right: 0,
+            height: Platform.OS === "ios" ? 24 * 4 : 24 * 2.4,
+            zIndex: 0,
+          }}
+        />
       {/* <BlurView
         style={{ width: "100%", height: 600 ,position: "absolute" }}
         experimentalBlurMethod="dimezisBlurView"

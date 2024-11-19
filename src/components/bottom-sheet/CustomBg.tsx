@@ -28,11 +28,7 @@ export const CustomBackground: React.FC<BottomSheetBackgroundProps> = ({
   const theme = useColorScheme();
 
   const animStyle = useAnimatedStyle(() => ({
-    backgroundColor: interpolateColor(
-      animatedIndex.value,
-      [0, 0.8],
-      ["#000000", "#011F21FF"]
-    ),
+    backgroundColor: "#011F21FF"
   }));
 
   // render
@@ -40,7 +36,7 @@ export const CustomBackground: React.FC<BottomSheetBackgroundProps> = ({
     <View style={[style,{backgroundColor:"black"}]}>
       <Animated.View
       
-        style={[style, { borderRadius: 10, backgroundColor: "white" }, animStyle]}
+        style={[style, { borderRadius: 10 }, animStyle]}
       ></Animated.View>
     </View>
   );

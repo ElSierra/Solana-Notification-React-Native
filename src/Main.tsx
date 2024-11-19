@@ -54,8 +54,9 @@ import {
   BottomSheetModal,
   BottomSheetModalProvider,
 } from "@gorhom/bottom-sheet";
-import { useModalState } from "./store";
-import { CustomBottomSheet } from "./components/bottom-sheet/bottomSheet";
+import { useAddWalletBottomSheet, useViewWalletBottomSheet } from "./store/ui";
+import { AddWalletBottomSheet } from "./components/bottom-sheet/AddWalletBottomSheet";
+import { ViewWalletBottomSheet } from "./components/bottom-sheet/ViewWalletBottomSheet";
 
 const MyTabs = createBottomTabNavigator({
   tabBar: (props) => <CustomTabBar {...props} />,
@@ -148,23 +149,25 @@ export default function Main() {
   console.log("🚀 ~ file: index.tsx:30 ~ Main ~ top:", top);
 
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
+  const viewBottomSheetModalRef = useRef<BottomSheetModal>(null);
   const { width, height } = useWindowDimensions();
   console.log("🚀 ~ file: App.tsx:27 ~ App ~ height:", height);
 
-  const bottomSheetState = useModalState((state) => state.open);
+  const bottomSheetState = useAddWalletBottomSheet((state) => state.open);
+  const viewBottomSheetState = useViewWalletBottomSheet((state)=>state.wallet)
 
   // variables
 
   // callbacks
-  const handlePresentModalPress = useCallback(() => {
-    bottomSheetModalRef.current?.snapToIndex(1);
-  }, []);
 
   useEffect(() => {
     if (bottomSheetState) {
       bottomSheetModalRef.current?.present();
     }
-  }, [bottomSheetState]);
+    if (viewBottomSheetState) {
+      viewBottomSheetModalRef.current?.present();
+    }
+  }, [bottomSheetState,viewBottomSheetState]);
 
   const animatedPosition = useSharedValue(0);
   const animatedValue = useSharedValue(height);
@@ -235,11 +238,20 @@ export default function Main() {
         backgroundColor="transparent"
       />
       <BottomSheetModalProvider>
-        <CustomBottomSheet
+        <AddWalletBottomSheet
           animatedPosition={animatedPosition}
           bottomSheetModalRef={bottomSheetModalRef}
         />
-        <Animated.View style={[{ flex: 1, backgroundColor: "black",overflow:"hidden", }, animStyle]}>
+        <ViewWalletBottomSheet
+          animatedPosition={animatedPosition}
+          bottomSheetModalRef={viewBottomSheetModalRef}
+        />
+        <Animated.View
+          style={[
+            { flex: 1, backgroundColor: "black", overflow: "hidden" },
+            animStyle,
+          ]}
+        >
           <Navigation />
         </Animated.View>
       </BottomSheetModalProvider>

@@ -19,15 +19,32 @@ import Animated, {
   useAnimatedStyle,
   useSharedValue,
 } from "react-native-reanimated";
-import { useHideTabBar } from "../../../store";
+import { useHideTabBar } from "../../../store/ui";
+import { data } from "../../../data/wallet";
+import { useState } from "react";
 
 type ListProps = {
   offsetY: SharedValue<number>;
   offsetHeight: SharedValue<number>;
 };
+const renderItem = ({
+  item,
+}: {
+  item: {
+    id: number;
+    name: string;
+    balance: string;
+    emoji: string;
+    address: string;
+  };
+}) => {
+  return <WalletContainer {...item} />;
+};
+
 export const List: React.FC<ListProps> = ({ offsetY, offsetHeight }) => {
   const scrollHeight = useSharedValue(0);
   const { height } = useWindowDimensions();
+
   // useAnimatedReaction(
   //   () =>scrollingUp.value,
   //   (value) => {
@@ -61,8 +78,8 @@ export const List: React.FC<ListProps> = ({ offsetY, offsetHeight }) => {
         {
           translateY: interpolate(
             offsetY.value,
-            [0, offsetHeight.value],
-            [0, -(50)],
+            [0, 400],
+            [0, -100],
             Extrapolation.CLAMP
           ),
         },
@@ -72,8 +89,11 @@ export const List: React.FC<ListProps> = ({ offsetY, offsetHeight }) => {
 
   const scrollHandler = useAnimatedScrollHandler((event) => {
     offsetY.value = event.contentOffset.y;
+
     offsetHeight.value = event.contentSize.height - scrollHeight.value;
+
     // const currentScrollY = event.contentOffset.y;
+
     // if (currentScrollY > prevOffsetY.value) {
     //   !hideTabBarState && runOnJS(hideTabBar)(true);
     // } else if (currentScrollY < prevOffsetY.value) {
@@ -83,20 +103,26 @@ export const List: React.FC<ListProps> = ({ offsetY, offsetHeight }) => {
   });
 
   return (
-    <Animated.View style={[]}>
+    <View>
       <Animated.FlatList
-        onLayout={(event) => {
-          scrollHeight.value = event.nativeEvent.layout.height;
-        }}
-        style={animListStyle}
-        onScroll={scrollHandler}
+        // onLayout={(event) => {
+        //   scrollHeight.value = event.nativeEvent.layout.height;
+        // }}
+        // onScroll={scrollHandler}
         decelerationRate={"fast"}
         fadingEdgeLength={100}
+        //performance settings
+        removeClippedSubviews
+        initialNumToRender={5}
+        maxToRenderPerBatch={5}
+        windowSize={10}
+        //performance settings
+
         contentContainerStyle={{ padding: 10, gap: 10, paddingBottom: 400 }}
-        data={[1, 2, 3, 45, 6, 7, 8, 9, 0]}
+        data={data}
         ListFooterComponent={() => <AddWallet />}
         scrollEventThrottle={16}
-        renderItem={({ item }) => <WalletContainer />}
+        renderItem={renderItem}
       />
       {Platform.OS === "ios" && (
         <LinearGradient
@@ -104,7 +130,7 @@ export const List: React.FC<ListProps> = ({ offsetY, offsetHeight }) => {
           style={styles.gradientBottom}
         />
       )}
-    </Animated.View>
+    </View>
   );
 };
 

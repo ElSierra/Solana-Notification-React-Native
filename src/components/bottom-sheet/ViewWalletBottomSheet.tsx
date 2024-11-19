@@ -1,6 +1,7 @@
 import {
   BottomSheetBackdrop,
   BottomSheetModal,
+  BottomSheetScrollView,
   BottomSheetView,
 } from "@gorhom/bottom-sheet";
 import React, { useCallback, useEffect, useMemo } from "react";
@@ -15,7 +16,11 @@ import CustomBackground from "./CustomBg";
 import { Easing, SharedValue, useSharedValue } from "react-native-reanimated";
 import { StyleSheet } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useModalState } from "../../store";
+import {
+  useAddWalletBottomSheet,
+  useViewWalletBottomSheet,
+} from "../../store/ui";
+import WebView from "react-native-webview";
 
 type CustomBottomSheetProps = {
   bottomSheetModalRef: React.RefObject<BottomSheetModal>;
@@ -23,17 +28,18 @@ type CustomBottomSheetProps = {
 
   // add your custom props here
 };
-export const CustomBottomSheet: React.FC<CustomBottomSheetProps> = ({
+export const ViewWalletBottomSheet: React.FC<CustomBottomSheetProps> = ({
   bottomSheetModalRef,
   animatedPosition,
 }) => {
-  const { height } = useWindowDimensions();
+  const { height, width } = useWindowDimensions();
   const { top } = useSafeAreaInsets();
   const percentage = Platform.OS === "ios" ? "90.5" : "94";
   console.log("🚀 ~ file: bottomSheet.tsx:27 ~ percentage:", percentage);
 
   console.log("🚀 ~ file: bottomSheet.tsx:26 ~ top:", top, height);
-  const toggleSheetState = useModalState((state) => state.toggle);
+  const toggleSheetState = useViewWalletBottomSheet((state) => state.setSate);
+  const sheetState = useViewWalletBottomSheet((state) => state.wallet);
   const snapPoints = useMemo(() => ["25%", `${percentage}%`], []);
   const renderBackdrop = useCallback(
     (props: any) => (
@@ -70,7 +76,7 @@ export const CustomBottomSheet: React.FC<CustomBottomSheetProps> = ({
     console.log("handleSheetChanges", index);
     sheetChange.value = index;
     if (index === -1) {
-      toggleSheetState();
+      toggleSheetState(null);
     }
   }, []);
   return (
@@ -88,13 +94,17 @@ export const CustomBottomSheet: React.FC<CustomBottomSheetProps> = ({
       backgroundComponent={CustomBackground}
       handleIndicatorStyle={{ display: "none" }}
       animatedPosition={animatedPosition}
+      enableDynamicSizing={false}
       snapPoints={snapPoints}
       onChange={handleSheetChanges}
       backdropComponent={renderBackdrop}
     >
-      <BottomSheetView style={styles.contentContainer}>
-        <Text style={{color:"white"}}>Awesome 🎉</Text>
-      </BottomSheetView>
+      <BottomSheetScrollView contentContainerStyle={styles.contentContainer}>
+        <WebView
+          source={{ uri: `https://solscan.io/account/${sheetState?.address}` }}
+          style={{ width: width, height: "100%" }}
+        />
+      </BottomSheetScrollView>
     </BottomSheetModal>
   );
 };
@@ -109,8 +119,9 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     flex: 1,
-
-    borderRadius: 0,
+    backgroundColor: "#011F21FF",
+    borderRadius: 10,
+    overflow: "hidden",
     alignItems: "center",
   },
 });
