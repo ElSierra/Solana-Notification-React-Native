@@ -71,7 +71,7 @@ export default function CustomTabBar({
         });
       }
     });
-  }, [refs.current]);
+  }, []);
 
   const x = useSharedValue(0);
   const y = useSharedValue(0);
@@ -89,7 +89,6 @@ export default function CustomTabBar({
     () => position,
     () => {
       if (position.length) {
-        console.log("a", position[focusedIndex].y);
         const indicatorWidth = position[focusedIndex].width / 3;
         const indicatorX =
           position[focusedIndex].x +
@@ -133,7 +132,7 @@ export default function CustomTabBar({
       ]}
     >
       <LinearGradient
-          colors={["rgba(255,255,255,0)", "rgba(255,255,255,0.2)"]}
+          colors={["rgba(255,255,255,0)", Theme.colors.background]}
           style={{
             position: "absolute",
             bottom: 0,

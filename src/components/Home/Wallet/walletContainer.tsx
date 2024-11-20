@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity, Pressable } from "react-native";
 import ReactNativeHapticFeedback from "react-native-haptic-feedback";
 import { useViewWalletBottomSheet } from "../../../store/ui";
 import React, { useState } from "react";
@@ -12,7 +12,9 @@ import Animated, {
   SharedValue,
   withDelay,
 } from "react-native-reanimated";
-import * as WebBrowser from 'expo-web-browser';
+import * as WebBrowser from "expo-web-browser";
+import { useNavigation } from "@react-navigation/native";
+import { HomeNavigationProp } from "../../../../types/navigation";
 
 type WalletContainerProps = {
   name: string;
@@ -21,7 +23,7 @@ type WalletContainerProps = {
   emoji: string;
 };
 
-export const WalletContainer: React.FC<WalletContainerProps> = ({
+const WalletContainer: React.FC<WalletContainerProps> = ({
   name,
   address,
   balance,
@@ -34,17 +36,26 @@ export const WalletContainer: React.FC<WalletContainerProps> = ({
     };
     ReactNativeHapticFeedback.trigger("soft", options);
   };
+  const navigation = useNavigation<HomeNavigationProp>();
+  // const openWalletState = useViewWalletBottomSheet((state) => state.setSate);
+  // const [result, setResult] = useState<any>(null);
 
-  const openWalletState = useViewWalletBottomSheet((state) => state.setSate);
-  const [result, setResult] = useState<any>(null);
-
-  const _handlePressButtonAsync = async () => {
-    let result = await WebBrowser.openBrowserAsync(`https://solscan.io/address/${address}`);
-    setResult(result);
-  };
+  // const _handlePressButtonAsync = async () => {
+  //   let result = await WebBrowser.openBrowserAsync(
+  //     `https://solscan.io/address/${address}`,
+  //     {
+  //       enableBarCollapsing: true,
+  //       showInRecents: true,
+  //       showTitle: false,
+  //       createTask: true,
+  //       toolbarColor: "#011F21FF",
+  //     }
+  //   );
+  //   setResult(result);
+  // };
 
   const handleOpenWallet = () => {
-    openWalletState({ name, address, balance, emoji, open: true });
+    navigation.navigate("ViewWallet", { address });
   };
 
   const scale = useSharedValue(1);
@@ -52,9 +63,9 @@ export const WalletContainer: React.FC<WalletContainerProps> = ({
   const gesture = Gesture.Tap()
     .onBegin(() => {
       scale.value = withTiming(0.9, { duration: 100 }, (finished) => {
-        if (finished) {
-          scale.value = withDelay(0, withTiming(1, { duration: 100 }));
-        }
+        // if (finished) {
+        //   scale.value = withDelay(0, withTiming(1, { duration: 100 }));
+        // }
       });
       opacity.value = withTiming(0.5, { duration: 100 }, (finished) => {
         if (finished) {
@@ -64,7 +75,7 @@ export const WalletContainer: React.FC<WalletContainerProps> = ({
     })
     .onStart(() => {
       runOnJS(vibrateAnimatedEnd)();
-      runOnJS(_handlePressButtonAsync)();
+      runOnJS(handleOpenWallet)();
       console.log("tapped");
     });
 
@@ -75,24 +86,28 @@ export const WalletContainer: React.FC<WalletContainerProps> = ({
     };
   });
 
-  // const longPress = Gesture.LongPress()
-  //   .onBegin(() => {
-  //     scale.value = withTiming(0.9, { duration: 100 });
-  //     opacity.value = withTiming(0.5, { duration: 100 });
-  //   })
-  //   .onStart(() => {
-
-  //     runOnJS(vibrateAnimatedEnd)();
-  //     scale.value = withTiming(1, { duration: 100 });
-  //     opacity.value = withTiming(1, { duration: 100 });
-  //   });
-
   const composed = Gesture.Simultaneous(gesture);
   return (
-    <GestureDetector gesture={composed}>
+    <Pressable
+      onPressIn={() => {
+        scale.value = withTiming(0.9, { duration: 100 }, (finished) => {
+          // if (finished) {
+          //   scale.value = withDelay(0, withTiming(1, { duration: 100 }));
+          // }
+        });
+      }}
+      onPress={() => {
+        vibrateAnimatedEnd();
+        handleOpenWallet();
+      }}
+      onPressOut={() => {
+        scale.value = withTiming(1, { duration: 100 });
+        opacity.value = withTiming(1, { duration: 100 });
+      }}
+    >
       <View
         style={{
-          backgroundColor: "#000000CE",
+          backgroundColor: "#262626FF",
           padding: 10,
           borderRadius: 20,
           width: "100%",
@@ -122,15 +137,30 @@ export const WalletContainer: React.FC<WalletContainerProps> = ({
               {emoji}
             </Text>
           </View>
-          <View style={{ flex: 1, marginLeft: 10 }}>
-            <Text style={{ color: "white", fontFamily: "satoshi-black" }}>
-              {balance} SOL
-            </Text>
+          <View
+            style={{
+              flex: 1,
+              marginLeft: 10,
+              justifyContent: "space-evenly",
+              height: 60,
+            }}
+          >
+            <View>
+              <Text
+                style={{
+                  color: "white",
+                  fontFamily: "satoshi-black",
+                  fontSize: 18,
+                }}
+              >
+                {balance} SOL
+              </Text>
+            </View>
             <Text
               style={{
                 color: "white",
                 fontFamily: "satoshi-light",
-                fontSize: 16,
+                fontSize: 12,
               }}
               numberOfLines={1}
               ellipsizeMode="tail"
@@ -140,6 +170,8 @@ export const WalletContainer: React.FC<WalletContainerProps> = ({
           </View>
         </Animated.View>
       </View>
-    </GestureDetector>
+    </Pressable>
   );
 };
+
+export default React.memo(WalletContainer);

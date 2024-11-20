@@ -8,7 +8,7 @@ import {
   useWindowDimensions,
 } from "react-native";
 import AddWallet from "../Wallet/AddWallet";
-import { WalletContainer } from "../Wallet/walletContainer";
+import WalletContainer from "../Wallet/walletContainer";
 import Animated, {
   Extrapolation,
   interpolate,
@@ -22,6 +22,7 @@ import Animated, {
 import { useHideTabBar } from "../../../store/ui";
 import { data } from "../../../data/wallet";
 import { useState } from "react";
+import { FlashList } from "@shopify/flash-list";
 
 type ListProps = {
   offsetY: SharedValue<number>;
@@ -103,22 +104,28 @@ export const List: React.FC<ListProps> = ({ offsetY, offsetHeight }) => {
   });
 
   return (
-    <View>
-      <Animated.FlatList
+    <View
+      style={{
+        flex: 1,
+      }}
+    >
+      <FlashList
         // onLayout={(event) => {
         //   scrollHeight.value = event.nativeEvent.layout.height;
         // }}
-        // onScroll={scrollHandler}
-        decelerationRate={"fast"}
+        // style={[animListStyle]}
+        //onScroll={scrollHandler}
+
+        showsVerticalScrollIndicator={false}
         fadingEdgeLength={100}
         //performance settings
         removeClippedSubviews
-        initialNumToRender={5}
-        maxToRenderPerBatch={5}
-        windowSize={10}
+        estimatedItemSize={100}
         //performance settings
-
-        contentContainerStyle={{ padding: 10, gap: 10, paddingBottom: 400 }}
+        ItemSeparatorComponent={() => (
+          <View style={{ height: 10}} />
+        )}
+        contentContainerStyle={{ padding: 10, paddingBottom: 400 }}
         data={data}
         ListFooterComponent={() => <AddWallet />}
         scrollEventThrottle={16}

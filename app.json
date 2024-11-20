@@ -37,11 +37,17 @@
             "assets/fonts/Satoshi-Bold.otf",
             "assets/fonts/Satoshi-Light.otf",
             "assets/fonts/Satoshi-Medium.otf",
-            "assets/fonts/Satoshi-Regular.otf"
+            "assets/fonts/Satoshi-Regular.otf",
+            "assets/fonts/NotoColorEmoji.ttf",
+            "assets/fonts/windows.ttf"
           ]
         }
-      ]
+      ],
+      "react-native-edge-to-edge"
     ],
+    // "experiments": {
+    //   "reactCompiler": true
+    // },
     "extra": {
       "eas": {
         "projectId": "fd178647-6835-424b-8bc8-44fa20e60003"

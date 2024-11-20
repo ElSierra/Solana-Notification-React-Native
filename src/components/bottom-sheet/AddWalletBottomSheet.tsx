@@ -16,6 +16,7 @@ import { Easing, SharedValue, useSharedValue } from "react-native-reanimated";
 import { StyleSheet } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useAddWalletBottomSheet } from "../../store/ui";
+import CreateWallet from "./CreateWallet";
 
 type CustomBottomSheetProps = {
   bottomSheetModalRef: React.RefObject<BottomSheetModal>;
@@ -93,7 +94,7 @@ export const AddWalletBottomSheet: React.FC<CustomBottomSheetProps> = ({
       backdropComponent={renderBackdrop}
     >
       <BottomSheetView style={styles.contentContainer}>
-        <Text style={{ color: "white" }}>Awesome 🎉</Text>
+        <CreateWallet />
       </BottomSheetView>
     </BottomSheetModal>
   );

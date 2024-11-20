@@ -29,7 +29,7 @@ import {
 } from "@shopify/react-native-skia";
 import { LinearGradient } from "expo-linear-gradient";
 import ReactNativeHapticFeedback from "react-native-haptic-feedback";
-import { WalletContainer } from "../components/Home/Wallet/walletContainer";
+
 import { Theme } from "../constants/Theme";
 import { FlatList } from "react-native";
 import AddWallet from "../components/Home/Wallet/AddWallet";
@@ -40,9 +40,12 @@ import Animated, {
   useAnimatedStyle,
   useSharedValue,
 } from "react-native-reanimated";
+import { useEmojiBottomSheet } from "../store/ui";
 
 export default function Home() {
   const bottomTabHeight = useBottomTabBarHeight();
+  const navigation = useNavigation();
+  const emojiSheetState = useEmojiBottomSheet((state) => state.open);
   console.log(
     "🚀 ~ file: Home.tsx:7 ~ Home ~ bottomTabHeight:",
     bottomTabHeight
@@ -50,7 +53,6 @@ export default function Home() {
   const { height, width } = useWindowDimensions();
   const offsetY = useSharedValue(0);
   const offsetHeight = useSharedValue(0);
-
 
   const solAnimStyle = useAnimatedStyle(() => {
     return {
@@ -66,6 +68,12 @@ export default function Home() {
       ],
     };
   });
+
+  useEffect(() => {
+    if (emojiSheetState) {
+      navigation.navigate("EmojiList");
+    }
+  }, [emojiSheetState]);
   return (
     <View style={{ flex: 1 }}>
       <View
@@ -78,7 +86,7 @@ export default function Home() {
         }}
       >
         <Canvas style={{ flex: 1 }}>
-          <Group dither >
+          <Group dither>
             <RadialGradient
               c={vec(width / 3, height)}
               r={900}
@@ -111,6 +119,15 @@ export default function Home() {
           style={{ fontFamily: "satoshi-black", color: "white", fontSize: 30 }}
         >
           0.0000 SOL
+        </Text>
+        <Text
+          style={{
+            fontFamily: "satoshi-regular",
+            color: "white",
+            fontSize: 18,
+          }}
+        >
+          $100.00 USD
         </Text>
       </Animated.View>
       <List offsetY={offsetY} offsetHeight={offsetHeight} />

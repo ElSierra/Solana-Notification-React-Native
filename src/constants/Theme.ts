@@ -8,7 +8,7 @@ export const Theme = {
         error: "#FF0000",
         tabBg: "#EAEAEAFF",
         icon:"white",
-        background:"#000000FF"
+        background:"#323138FF"
     },
     fonts: {
         light: "salmond-light",

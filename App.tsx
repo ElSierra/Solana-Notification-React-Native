@@ -13,11 +13,18 @@ import { StatusBar as RStatusBar } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { TransparentCircleOverlay } from "./src/components/Home/Cicrle";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { enableFreeze } from "react-native-screens";
 // Keep the splash screen visible while we fetch resources
-// SplashScreen.preventAutoHideAsync();
-
+SplashScreen.preventAutoHideAsync();
+SplashScreen.setOptions({
+  duration: 1000,
+  fade: true,
+});
+enableFreeze(true);
 export default function App() {
   const [loaded, error] = useFonts({
+    "noto": require("./assets/fonts/NotoColorEmoji.ttf"),
+    "windows": require("./assets/fonts/windows.ttf"),
     "salmond-light": require("./assets/fonts/Salmond-Light.ttf"),
     "salmond-semibold": require("./assets/fonts/Salmond-Semibold.ttf"),
     "satoshi-light": require("./assets/fonts/Satoshi-Light.otf"),

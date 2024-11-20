@@ -23,6 +23,11 @@ interface ViewWalletState {
     } | null
   ) => void;
 }
+interface EmojiBottomSheetState {
+  open: boolean;
+  setOpen: (open: boolean) => void;
+  toggle: () => void;
+}
 
 interface HideTabBarState {
   hide: boolean;
@@ -43,4 +48,10 @@ export const useViewWalletBottomSheet = create<ViewWalletState>((set) => ({
 export const useHideTabBar = create<HideTabBarState>((set) => ({
   hide: false,
   setHide: (hide: boolean) => set({ hide }),
+}));
+
+export const useEmojiBottomSheet = create<EmojiBottomSheetState>((set) => ({
+  open: false,
+  setOpen: (open: boolean) => set({ open }),
+  toggle: () => set((state) => ({ open: !state.open })),
 }));

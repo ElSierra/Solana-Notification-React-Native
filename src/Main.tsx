@@ -18,6 +18,7 @@ import Animated, {
 } from "react-native-reanimated";
 import {
   createStaticNavigation,
+  StaticParamList,
   useLinkBuilder,
   useTheme,
 } from "@react-navigation/native";
@@ -45,19 +46,31 @@ import CustomTabBar from "./components/CustomTabBar";
 import { AnimatedIcon } from "./components/CustomTabBar/AnimatedIcon";
 import { Theme } from "./constants/Theme";
 import { StatusBar } from "expo-status-bar";
-import Likes from "./Screens/Likes";
+import Likes from "./Screens/EmojiList";
 import Profile from "./Screens/Profile";
-import { BottomSheet } from "./Screens/BottomSheet";
+import { ViewWallet } from "./Screens/ViewWallet";
 import { Canvas, vec, Rect, LinearGradient } from "@shopify/react-native-skia";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import {
   BottomSheetModal,
   BottomSheetModalProvider,
 } from "@gorhom/bottom-sheet";
-import { useAddWalletBottomSheet, useViewWalletBottomSheet } from "./store/ui";
+import {
+  useAddWalletBottomSheet,
+  useEmojiBottomSheet,
+  useViewWalletBottomSheet,
+} from "./store/ui";
 import { AddWalletBottomSheet } from "./components/bottom-sheet/AddWalletBottomSheet";
-import { ViewWalletBottomSheet } from "./components/bottom-sheet/ViewWalletBottomSheet";
 
+import EmojiList from "./Screens/EmojiList";
+
+type RootStackParamList = StaticParamList<typeof RootStack>;
+
+declare global {
+  namespace ReactNavigation {
+    interface RootParamList extends RootStackParamList {}
+  }
+}
 const MyTabs = createBottomTabNavigator({
   tabBar: (props) => <CustomTabBar {...props} />,
 
@@ -137,6 +150,26 @@ const RootStack = createNativeStackNavigator({
 
   screens: {
     Tabs: MyTabs,
+    EmojiList: {
+      screen: EmojiList,
+      options: {
+        presentation: "modal",
+      },
+    },
+    ViewWallet: {
+      screen: ViewWallet,
+      options: {
+        presentation: "formSheet",
+        headerShown: false,
+        sheetAllowedDetents: [0.9],
+        sheetCornerRadius: 20,
+        sheetExpandsWhenScrolledToEdge: true,
+        sheetElevation: 0,
+        contentStyle: {
+          backgroundColor: "#11001FFF",
+        },
+      },
+    },
   },
 });
 
@@ -154,7 +187,7 @@ export default function Main() {
   console.log("🚀 ~ file: App.tsx:27 ~ App ~ height:", height);
 
   const bottomSheetState = useAddWalletBottomSheet((state) => state.open);
-  const viewBottomSheetState = useViewWalletBottomSheet((state)=>state.wallet)
+  const viewBottomSheetState = useEmojiBottomSheet((state) => state.open);
 
   // variables
 
@@ -164,10 +197,7 @@ export default function Main() {
     if (bottomSheetState) {
       bottomSheetModalRef.current?.present();
     }
-    if (viewBottomSheetState) {
-      viewBottomSheetModalRef.current?.present();
-    }
-  }, [bottomSheetState,viewBottomSheetState]);
+  }, [bottomSheetState]);
 
   const animatedPosition = useSharedValue(0);
   const animatedValue = useSharedValue(height);
@@ -242,10 +272,7 @@ export default function Main() {
           animatedPosition={animatedPosition}
           bottomSheetModalRef={bottomSheetModalRef}
         />
-        <ViewWalletBottomSheet
-          animatedPosition={animatedPosition}
-          bottomSheetModalRef={viewBottomSheetModalRef}
-        />
+
         <Animated.View
           style={[
             { flex: 1, backgroundColor: "black", overflow: "hidden" },

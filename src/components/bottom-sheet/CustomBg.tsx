@@ -28,7 +28,7 @@ export const CustomBackground: React.FC<BottomSheetBackgroundProps> = ({
   const theme = useColorScheme();
 
   const animStyle = useAnimatedStyle(() => ({
-    backgroundColor: "#011F21FF"
+    backgroundColor: Theme.colors.background,
   }));
 
   // render
