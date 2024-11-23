@@ -27,6 +27,8 @@ interface EmojiBottomSheetState {
   open: boolean;
   setOpen: (open: boolean) => void;
   toggle: () => void;
+  openSheet: () => void;
+  closeSheet: () => void;
 }
 
 interface HideTabBarState {
@@ -54,4 +56,6 @@ export const useEmojiBottomSheet = create<EmojiBottomSheetState>((set) => ({
   open: false,
   setOpen: (open: boolean) => set({ open }),
   toggle: () => set((state) => ({ open: !state.open })),
+  openSheet: () => set({ open: true }),
+  closeSheet: () => set({ open: false }),
 }));

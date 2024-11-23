@@ -4,6 +4,7 @@ import {
   StyleSheet,
   useWindowDimensions,
   Platform,
+  Button,
 } from "react-native";
 import React, { useEffect } from "react";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
@@ -41,6 +42,7 @@ import Animated, {
   useSharedValue,
 } from "react-native-reanimated";
 import { useEmojiBottomSheet } from "../store/ui";
+import { useWalletStore } from "../store/wallet";
 
 export default function Home() {
   const bottomTabHeight = useBottomTabBarHeight();
@@ -53,7 +55,7 @@ export default function Home() {
   const { height, width } = useWindowDimensions();
   const offsetY = useSharedValue(0);
   const offsetHeight = useSharedValue(0);
-
+  const addDummyData = useWalletStore((state) => state.addDummyData);
   const solAnimStyle = useAnimatedStyle(() => {
     return {
       transform: [
@@ -74,6 +76,8 @@ export default function Home() {
       navigation.navigate("EmojiList");
     }
   }, [emojiSheetState]);
+
+  useEffect(() => {}, []);
   return (
     <View style={{ flex: 1 }}>
       <View

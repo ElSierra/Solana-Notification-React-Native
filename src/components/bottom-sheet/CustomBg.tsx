@@ -12,18 +12,6 @@ export const CustomBackground: React.FC<BottomSheetBackgroundProps> = ({
   style,
   animatedIndex,
 }) => {
-  console.log(
-    "🚀 ~ file: CustomBg.tsx:13 ~ animatedIndex:",
-    animatedIndex.value
-  );
-
-  useAnimatedReaction(
-    () => animatedIndex.value,
-    (value) => {
-      console.log("🚀 ~ file: CustomBg.tsx:19 ~ value", value);
-    },
-    [animatedIndex]
-  );
   //#region styles
   const theme = useColorScheme();
 
@@ -33,9 +21,8 @@ export const CustomBackground: React.FC<BottomSheetBackgroundProps> = ({
 
   // render
   return (
-    <View style={[style,{backgroundColor:"black"}]}>
+    <View style={[style, { backgroundColor: "black" }]}>
       <Animated.View
-      
         style={[style, { borderRadius: 10 }, animStyle]}
       ></Animated.View>
     </View>

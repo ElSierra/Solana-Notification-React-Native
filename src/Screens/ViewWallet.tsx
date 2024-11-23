@@ -1,13 +1,21 @@
 import { StatusBar } from "expo-status-bar";
-import { View, useWindowDimensions } from "react-native";
+import { ActivityIndicator, View, useWindowDimensions } from "react-native";
 import WebView from "react-native-webview";
 import { ViewWalletProp } from "../../types/navigation";
 import { useNavigation } from "@react-navigation/native";
+import { useEffect, useState } from "react";
 
 export const ViewWallet = ({ route }: ViewWalletProp) => {
   console.log(route.params.address);
   const { height } = useWindowDimensions();
   const navigation = useNavigation();
+  const [showVebView, setShowVebView] = useState(false);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setShowVebView(true);
+    }, 1000);
+  }, []);
   return (
     <>
       <StatusBar
@@ -16,11 +24,14 @@ export const ViewWallet = ({ route }: ViewWalletProp) => {
         backgroundColor="transparent"
       />
       <View style={{ height: height }}>
-        <WebView
-          source={{ uri: `https://solscan.io/address/${route.params.address}` }}
-          style={{ flex: 1, backgroundColor: 'black' }}
-          useWebView2={true}
-          injectedJavaScript={`
+        {showVebView ? (
+          <WebView
+            source={{
+              uri: `https://solscan.io/address/${route.params.address}`,
+            }}
+            style={{ flex: 1, backgroundColor: "black" }}
+            useWebView2={true}
+            injectedJavaScript={`
  (function() {
               const htmlElement = document.querySelector('html');
               const bodyElement = document.querySelector('body');
@@ -48,7 +59,18 @@ export const ViewWallet = ({ route }: ViewWalletProp) => {
               observer.observe(document, { childList: true, subtree: true });
             })();
           `}
-        />
+          />
+        ) : (
+          <View
+            style={{
+              flex: 1,
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <ActivityIndicator size="large" color="#9595FF7D" />
+          </View>
+        )}
       </View>
     </>
   );

@@ -63,6 +63,7 @@ import {
 import { AddWalletBottomSheet } from "./components/bottom-sheet/AddWalletBottomSheet";
 
 import EmojiList from "./Screens/EmojiList";
+import { Toaster } from "sonner-native";
 
 type RootStackParamList = StaticParamList<typeof RootStack>;
 
@@ -254,14 +255,10 @@ export default function Main() {
     []
   );
 
-  useAnimatedReaction(
-    () => animatedValue.value,
-    (value) => {
-      console.log("🚀 ~ file: App.tsx:96 ~ useAnimatedReaction ~ value", value);
-    }
-  );
+ 
   return (
     <>
+      
       <StatusBar
         animated={true}
         style={"light"}
@@ -280,7 +277,9 @@ export default function Main() {
           ]}
         >
           <Navigation />
+        
         </Animated.View>
+        <Toaster />
       </BottomSheetModalProvider>
     </>
   );

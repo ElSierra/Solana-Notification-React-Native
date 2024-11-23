@@ -12,7 +12,9 @@ import WalletContainer from "../Wallet/walletContainer";
 import Animated, {
   Extrapolation,
   interpolate,
+  LinearTransition,
   runOnJS,
+  SequencedTransition,
   SharedValue,
   useAnimatedReaction,
   useAnimatedScrollHandler,
@@ -21,8 +23,10 @@ import Animated, {
 } from "react-native-reanimated";
 import { useHideTabBar } from "../../../store/ui";
 import { data } from "../../../data/wallet";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { FlashList } from "@shopify/flash-list";
+import { useWalletStore } from "../../../store/wallet";
+import { emojis } from "../../../data/emoji";
 
 type ListProps = {
   offsetY: SharedValue<number>;
@@ -32,19 +36,19 @@ const renderItem = ({
   item,
 }: {
   item: {
-    id: number;
-    name: string;
-    balance: string;
-    emoji: string;
-    address: string;
+    id: string;
+    walletName: string;
+    walletAddress: string;
+    emoji: number;
+    balance?: number;
   };
 }) => {
   return <WalletContainer {...item} />;
 };
 
 export const List: React.FC<ListProps> = ({ offsetY, offsetHeight }) => {
-  const scrollHeight = useSharedValue(0);
-  const { height } = useWindowDimensions();
+  const deleteAllWallets = useWalletStore((state) => state.deleteAllWallets);
+  const walletList = useWalletStore((state) => state.walletData);
 
   // useAnimatedReaction(
   //   () =>scrollingUp.value,
@@ -88,28 +92,28 @@ export const List: React.FC<ListProps> = ({ offsetY, offsetHeight }) => {
     };
   });
 
-  const scrollHandler = useAnimatedScrollHandler((event) => {
-    offsetY.value = event.contentOffset.y;
+  // const scrollHandler = useAnimatedScrollHandler((event) => {
+  //   offsetY.value = event.contentOffset.y;
 
-    offsetHeight.value = event.contentSize.height - scrollHeight.value;
+  //   offsetHeight.value = event.contentSize.height - scrollHeight.value;
 
-    // const currentScrollY = event.contentOffset.y;
+  //   // const currentScrollY = event.contentOffset.y;
 
-    // if (currentScrollY > prevOffsetY.value) {
-    //   !hideTabBarState && runOnJS(hideTabBar)(true);
-    // } else if (currentScrollY < prevOffsetY.value) {
-    //   hideTabBarState && runOnJS(hideTabBar)(false);
-    // }
-    // prevOffsetY.value = currentScrollY;
-  });
+  //   // if (currentScrollY > prevOffsetY.value) {
+  //   //   !hideTabBarState && runOnJS(hideTabBar)(true);
+  //   // } else if (currentScrollY < prevOffsetY.value) {
+  //   //   hideTabBarState && runOnJS(hideTabBar)(false);
+  //   // }
+  //   // prevOffsetY.value = currentScrollY;
+  // });
 
   return (
-    <View
+    <Animated.View
       style={{
         flex: 1,
       }}
     >
-      <FlashList
+      <Animated.FlatList
         // onLayout={(event) => {
         //   scrollHeight.value = event.nativeEvent.layout.height;
         // }}
@@ -119,16 +123,17 @@ export const List: React.FC<ListProps> = ({ offsetY, offsetHeight }) => {
         showsVerticalScrollIndicator={false}
         fadingEdgeLength={100}
         //performance settings
-        removeClippedSubviews
-        estimatedItemSize={100}
+        // itemLayoutAnimation={SequencedTransition}
+        // removeClippedSubviews
+        // initialNumToRender={20}
+        // estimatedItemSize={100}
         //performance settings
-        ItemSeparatorComponent={() => (
-          <View style={{ height: 10}} />
-        )}
-        contentContainerStyle={{ padding: 10, paddingBottom: 400 }}
-        data={data}
+        // ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
+        contentContainerStyle={{ padding: 10, paddingBottom: 400, }}
+        data={walletList}
         ListFooterComponent={() => <AddWallet />}
         scrollEventThrottle={16}
+        keyExtractor={(item) => item.id}
         renderItem={renderItem}
       />
       {Platform.OS === "ios" && (
@@ -137,7 +142,7 @@ export const List: React.FC<ListProps> = ({ offsetY, offsetHeight }) => {
           style={styles.gradientBottom}
         />
       )}
-    </View>
+    </Animated.View>
   );
 };
 

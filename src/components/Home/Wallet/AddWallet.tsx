@@ -52,6 +52,7 @@ export default function AddWallet() {
           width: "100%",
           justifyContent: "center",
           alignItems: "center",
+          marginTop : 20
         },
         addWalletAnimStyle,
       ]}
