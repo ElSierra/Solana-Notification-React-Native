@@ -11,6 +11,7 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 import ReactNativeHapticFeedback from "react-native-haptic-feedback";
+import { useIsDarkMode } from "../../../hooks/getMode";
 export default function AddWallet() {
   const navigation = useNavigation();
   const toggleState = useAddWalletBottomSheet((state) => state.toggle);
@@ -44,7 +45,7 @@ export default function AddWallet() {
       opacity: opacity.value,
     };
   });
-
+  const isDarkMode = useIsDarkMode();
   return (
     <Animated.View
       style={[
@@ -52,13 +53,13 @@ export default function AddWallet() {
           width: "100%",
           justifyContent: "center",
           alignItems: "center",
-          marginTop : 20
+          marginTop: 20,
         },
         addWalletAnimStyle,
       ]}
     >
       <GestureDetector gesture={gesture}>
-        <AddIcon size={60} color="white" />
+        <AddIcon size={60} color={isDarkMode ? "white" : "black"} />
       </GestureDetector>
     </Animated.View>
   );

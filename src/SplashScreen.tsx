@@ -256,7 +256,7 @@ export const SplashScreenView: React.FC<SplashScreenViewProps> = ({
           <View ref={quiRef}>
             <Text
               style={{
-                fontFamily: "satoshi-black",
+                fontFamily: "Satoshi-Black",
                 fontSize: 62,
                 color: "white",
                 opacity: 0,
@@ -268,7 +268,7 @@ export const SplashScreenView: React.FC<SplashScreenViewProps> = ({
           <View ref={dioRef}>
             <Text
               style={{
-                fontFamily: "satoshi-black",
+                fontFamily: "Satoshi-Black",
                 fontSize: 62,
                 color: "white",
                 opacity: 0,
@@ -306,7 +306,7 @@ export const SplashScreenView: React.FC<SplashScreenViewProps> = ({
           >
             <Text
               style={{
-                fontFamily: "satoshi-black",
+                fontFamily: "Satoshi-Black",
                 fontSize: 62,
                 color: Theme.colors.primary,
               }}
@@ -325,7 +325,7 @@ export const SplashScreenView: React.FC<SplashScreenViewProps> = ({
           >
             <Text
               style={{
-                fontFamily: "satoshi-black",
+                fontFamily: "Satoshi-Black",
                 fontSize: 62,
                 color: Theme.colors.primary,
               }}

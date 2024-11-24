@@ -27,6 +27,7 @@ import { useEffect, useMemo, useState } from "react";
 import { FlashList } from "@shopify/flash-list";
 import { useWalletStore } from "../../../store/wallet";
 import { emojis } from "../../../data/emoji";
+import { useIsDarkMode } from "../../../hooks/getMode";
 
 type ListProps = {
   offsetY: SharedValue<number>;
@@ -129,19 +130,13 @@ export const List: React.FC<ListProps> = ({ offsetY, offsetHeight }) => {
         // estimatedItemSize={100}
         //performance settings
         // ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
-        contentContainerStyle={{ padding: 10, paddingBottom: 400, }}
+        contentContainerStyle={{ padding: 10, paddingBottom: 400 }}
         data={walletList}
         ListFooterComponent={() => <AddWallet />}
         scrollEventThrottle={16}
         keyExtractor={(item) => item.id}
         renderItem={renderItem}
       />
-      {Platform.OS === "ios" && (
-        <LinearGradient
-          colors={["rgba(255,255,255,0)", "rgba(255,255,255,0.4)"]}
-          style={styles.gradientBottom}
-        />
-      )}
     </Animated.View>
   );
 };

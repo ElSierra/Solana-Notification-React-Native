@@ -2,9 +2,11 @@ import { StateStorage, createJSONStorage, persist } from "zustand/middleware";
 import { MMKV } from "react-native-mmkv";
 import { create } from "zustand";
 import * as Crypto from "expo-crypto";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 const storage = new MMKV();
 
-const zustandStorage: StateStorage = {
+export const zustandStorage: StateStorage = {
   setItem: (name, value) => {
     return storage.set(name, value);
   },

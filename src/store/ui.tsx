@@ -1,4 +1,6 @@
+import { createJSONStorage, persist } from "zustand/middleware";
 import { create } from "zustand/react";
+import { zustandStorage } from "./wallet";
 
 interface AddWalletState {
   open: boolean;
@@ -35,6 +37,10 @@ interface HideTabBarState {
   hide: boolean;
   setHide: (hide: boolean) => void;
 }
+interface ModeState {
+  mode: "light" | "dark";
+  toggleMode: () => void;
+}
 export const useAddWalletBottomSheet = create<AddWalletState>((set) => ({
   open: false,
 
@@ -59,3 +65,17 @@ export const useEmojiBottomSheet = create<EmojiBottomSheetState>((set) => ({
   openSheet: () => set({ open: true }),
   closeSheet: () => set({ open: false }),
 }));
+
+export const useMode = create<ModeState>()(
+  persist(
+    (set) => ({
+      mode: "dark",
+      toggleMode: () =>
+        set((state) => ({ mode: state.mode === "light" ? "dark" : "light" })),
+    }),
+    {
+      name: "mode",
+      storage: createJSONStorage(() => zustandStorage),
+    }
+  )
+);

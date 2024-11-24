@@ -11,6 +11,7 @@ import Animated, {
 import { IconProps } from "../global/icons";
 import { opacity } from "react-native-reanimated/lib/typescript/Colors";
 import { Theme } from "../../constants/Theme";
+import { useIsDarkMode } from "../../hooks/getMode";
 
 type AnimatedIconProps = {
   focused: boolean;
@@ -28,12 +29,15 @@ export const AnimatedIcon: React.FC<AnimatedIconProps> = ({
   const scaleIconUnFocused = useSharedValue(1);
   const opacityFocused = useSharedValue(focused ? 1 : 0);
   const opacityUnFocused = useSharedValue(0);
-
+  const isDark = useIsDarkMode();
   useAnimatedReaction(
     () => focused,
     () => {
       if (focused) {
-        scaleIconFocused.value = Platform.OS === "android"  ?withSequence(withSpring(1.4), withSpring(1.1)) : 1;
+        scaleIconFocused.value =
+          Platform.OS === "android"
+            ? withSequence(withSpring(1.4), withSpring(1.1))
+            : 1;
         scaleIconUnFocused.value = withSpring(1);
         opacityFocused.value = withTiming(1);
         opacityUnFocused.value = withTiming(0);
@@ -62,10 +66,13 @@ export const AnimatedIcon: React.FC<AnimatedIconProps> = ({
   return (
     <View>
       <Animated.View style={[{ position: "absolute" }, focusedStyle]}>
-        <FocusedIcon color={Theme.colors.icon} size={size} />
+        <FocusedIcon color={isDark ? Theme.colors.icon : "black"} size={size} />
       </Animated.View>
       <Animated.View style={[unfocusedStyle]}>
-        <UnfocusedIcon color={Theme.colors.icon} size={size} />
+        <UnfocusedIcon
+          color={isDark ? Theme.colors.icon : "black"}
+          size={size}
+        />
       </Animated.View>
     </View>
   );

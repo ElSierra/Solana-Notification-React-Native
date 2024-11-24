@@ -26,6 +26,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import {
   BottomTabBarProps,
   createBottomTabNavigator,
+  SceneStyleInterpolators,
 } from "@react-navigation/bottom-tabs";
 import Home from "./Screens/Home";
 import Explore from "./Screens/Explore";
@@ -49,7 +50,14 @@ import { StatusBar } from "expo-status-bar";
 import Likes from "./Screens/EmojiList";
 import Profile from "./Screens/Profile";
 import { ViewWallet } from "./Screens/ViewWallet";
-import { Canvas, vec, Rect, LinearGradient } from "@shopify/react-native-skia";
+import {
+  Canvas,
+  vec,
+  Rect,
+  Group,
+  RadialGradient,
+  Fill,
+} from "@shopify/react-native-skia";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import {
   BottomSheetModal,
@@ -58,13 +66,14 @@ import {
 import {
   useAddWalletBottomSheet,
   useEmojiBottomSheet,
+  useMode,
   useViewWalletBottomSheet,
 } from "./store/ui";
 import { AddWalletBottomSheet } from "./components/bottom-sheet/AddWalletBottomSheet";
 
 import EmojiList from "./Screens/EmojiList";
-import { Toaster } from "sonner-native";
-
+import { LinearGradient } from "expo-linear-gradient";
+import { DarkModeIcon } from "./components/CustomTabBar/DarkModeIcon";
 type RootStackParamList = StaticParamList<typeof RootStack>;
 
 declare global {
@@ -78,6 +87,7 @@ const MyTabs = createBottomTabNavigator({
   screenOptions: {
     headerShown: false,
     animation: "shift",
+
     sceneStyle: {
       backgroundColor: "transparent",
     },
@@ -112,6 +122,15 @@ const MyTabs = createBottomTabNavigator({
       },
       screen: Explore,
     },
+
+    DarkMode: {
+      options: {
+        //MAKE THE ICON JUST A BUTTON
+
+        tabBarIcon: ({ color, size, focused }) => <DarkModeIcon size={size} />,
+      },
+      screen: Home,
+    },
     // Likes: {
     //   options: {
     //     tabBarIcon: ({ color, size, focused }) => (
@@ -145,7 +164,7 @@ const RootStack = createNativeStackNavigator({
   screenOptions: {
     headerShown: false,
     contentStyle: {
-      backgroundColor: "#11001FFF",
+      backgroundColor: "transparent",
     },
   },
 
@@ -167,7 +186,7 @@ const RootStack = createNativeStackNavigator({
         sheetExpandsWhenScrolledToEdge: true,
         sheetElevation: 0,
         contentStyle: {
-          backgroundColor: "#11001FFF",
+          backgroundColor: "black",
         },
       },
     },
@@ -255,13 +274,13 @@ export default function Main() {
     []
   );
 
- 
+  const Mode = useMode((state) => state.mode);
+
   return (
     <>
-      
       <StatusBar
         animated={true}
-        style={"light"}
+        style={Mode === "dark" ? "light" : "dark"}
         backgroundColor="transparent"
       />
       <BottomSheetModalProvider>
@@ -272,14 +291,49 @@ export default function Main() {
 
         <Animated.View
           style={[
-            { flex: 1, backgroundColor: "black", overflow: "hidden" },
+            { flex: 1, backgroundColor: "#00000000", overflow: "hidden" },
             animStyle,
           ]}
         >
+          <View
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              zIndex: 0,
+            }}
+          >
+            {/* <Canvas style={{ flex: 1 }}>
+            <Group dither>
+              <RadialGradient
+                c={vec(width / 3, height)}
+                r={900}
+                colors={["#00000094", "#01272AFF"]}
+              />
+              <Rect x={0} y={0} width={width} height={height + 40} />
+              <Fill color="#00000027" />
+            </Group>
+          </Canvas> */}
+            <LinearGradient
+              colors={
+                Mode === "dark"
+                  ? ["#002327FF", "#000000FF"]
+                  : ["#E6FCFEFF", "#FFFFFFFF"]
+              }
+              style={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                right: 0,
+                height: height + 40,
+                zIndex: 0,
+              }}
+            />
+          </View>
           <Navigation />
-        
         </Animated.View>
-        <Toaster />
       </BottomSheetModalProvider>
     </>
   );

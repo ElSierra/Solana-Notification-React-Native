@@ -21,6 +21,7 @@ import Animated, {
   useSharedValue,
 } from "react-native-reanimated";
 import Form from "./Form";
+import { useIsDarkMode } from "../../hooks/getMode";
 
 export default function CreateWallet() {
   const getRandomNumberFromRange = (min: number, max: number) => {
@@ -30,7 +31,6 @@ export default function CreateWallet() {
   const [showList, setShowList] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const { width, height } = useWindowDimensions();
-
 
   const getMaxColumn = useMemo(() => {
     return getMaxColumns(width * 0.9, 40);
@@ -66,6 +66,7 @@ export default function CreateWallet() {
     return <EmojiContainer item={item} onPress={handlePress} />;
   };
 
+  const isDarkMode = useIsDarkMode();
   const scale = useSharedValue(1);
 
   const emojiStyleAnim = useAnimatedStyle(() => {
@@ -146,8 +147,8 @@ export default function CreateWallet() {
         <View style={{ alignItems: "center", marginTop: 20 }}>
           <Text
             style={{
-              fontFamily: "satoshi-black",
-              color: "white",
+              fontFamily: "Satoshi-Black",
+              color: isDarkMode ? "white" : "black",
               fontSize: 20,
             }}
           >
@@ -187,13 +188,17 @@ export default function CreateWallet() {
               <BlurView
                 experimentalBlurMethod="dimezisBlurView"
                 intensity={60}
-                tint="dark"
+                tint={isDarkMode ? "dark" : "light"}
                 style={{ position: "absolute", height: "100%", width: "100%" }}
               />
             </View>
             <View style={emojiStyleAnim}>
               <Text
-                style={{ fontFamily: "windows", color: "white", fontSize: 60 }}
+                style={{
+                  fontFamily: "windows",
+                  
+                  fontSize: 60,
+                }}
               >
                 {emojis[getEmojiIndex].emoji}
               </Text>

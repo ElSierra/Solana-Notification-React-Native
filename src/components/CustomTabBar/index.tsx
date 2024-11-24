@@ -26,8 +26,10 @@ import { PlatformPressable } from "@react-navigation/elements";
 import ReactNativeHapticFeedback from "react-native-haptic-feedback";
 import { BlurView } from "expo-blur";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useHideTabBar } from "../../store/ui";
+import { useHideTabBar, useMode } from "../../store/ui";
 import { LinearGradient } from "expo-linear-gradient";
+import { useIsDarkMode } from "../../hooks/getMode";
+import switchTheme from "react-native-theme-switch-animation";
 
 export default function CustomTabBar({
   state,
@@ -39,7 +41,6 @@ export default function CustomTabBar({
   const refs = useRef<(View | null)[]>([]);
 
   const { bottom } = useSafeAreaInsets();
-  console.log("🚀 ~ file: index.tsx:39 ~ height:", bottom);
 
   const [position, setPosition] = React.useState<
     {
@@ -109,6 +110,8 @@ export default function CustomTabBar({
     };
   });
 
+  const isDarkMode = useIsDarkMode();
+  const toggleMode = useMode((state) => state.toggleMode);
   return (
     <View
       style={[
@@ -121,9 +124,9 @@ export default function CustomTabBar({
           paddingBottom: bottom,
           overflow: "hidden",
 
-          borderTopColor: "#2E2E2EFF",
-          borderLeftColor: "#2E2E2EFF",
-          borderRightColor: "#2E2E2EFF",
+          // borderTopColor: "#2E2E2EFF",
+          // borderLeftColor: "#2E2E2EFF",
+          // borderRightColor: "#2E2E2EFF",
 
           position: "absolute",
           bottom: 0,
@@ -132,16 +135,20 @@ export default function CustomTabBar({
       ]}
     >
       <LinearGradient
-          colors={["rgba(255,255,255,0)", Theme.colors.background]}
-          style={{
-            position: "absolute",
-            bottom: 0,
-            left: 0,
-            right: 0,
-            height: Platform.OS === "ios" ? 24 * 4 : 24 * 2.4,
-            zIndex: 0,
-          }}
-        />
+        colors={
+          isDarkMode
+            ? ["rgba(255,255,255,0)", "#04B6754E"]
+            : ["rgba(255,255,255,0)", "#04B6753F"]
+        }
+        style={{
+          position: "absolute",
+          bottom: 0,
+          left: 0,
+          right: 0,
+          height: Platform.OS === "ios" ? 24 * 4 : 24 * 2.4,
+          zIndex: 0,
+        }}
+      />
       {/* <BlurView
         style={{ width: "100%", height: 600 ,position: "absolute" }}
         experimentalBlurMethod="dimezisBlurView"
@@ -195,7 +202,21 @@ export default function CustomTabBar({
           });
 
           if (!isFocused && !event.defaultPrevented) {
-            navigation.navigate(route.name, route.params);
+            route.name === "DarkMode"
+              ? switchTheme({
+                  switchThemeFunction: () => {
+                    toggleMode();
+                  },
+                  animationConfig: {
+                    type: "circular",
+                    duration: 900,
+                    startingPoint: {
+                      cxRatio: 0.5,
+                      cyRatio: 0.5,
+                    },
+                  },
+                })
+              : navigation.navigate(route.name, route.params);
           }
         };
 
@@ -243,8 +264,8 @@ export default function CustomTabBar({
               </View>
 
               {/* <Text style={{ color: isFocused ? colors.primary : colors.text }}>
-                  {label}
-                </Text> */}
+                    {label}
+                  </Text> */}
             </PlatformPressable>
           </View>
         );

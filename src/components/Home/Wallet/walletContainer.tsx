@@ -26,6 +26,7 @@ import ReanimatedSwipeable from "react-native-gesture-handler/ReanimatedSwipeabl
 import { TrashIcon } from "../../global/icons";
 import { emojis } from "../../../data/emoji";
 import { useWalletStore } from "../../../store/wallet";
+import { useIsDarkMode } from "../../../hooks/getMode";
 type WalletContainerProps = {
   walletName: string;
   walletAddress: string;
@@ -48,6 +49,7 @@ const WalletContainer: React.FC<WalletContainerProps> = ({
     };
     ReactNativeHapticFeedback.trigger("soft", options);
   };
+  const isDarkMode = useIsDarkMode();
 
   const { width } = useWindowDimensions();
   const navigation = useNavigation<HomeNavigationProp>();
@@ -151,7 +153,7 @@ const WalletContainer: React.FC<WalletContainerProps> = ({
           <View style={styles.rightAction}>
             <View
               style={{
-                backgroundColor: "#9C0404FF",
+                backgroundColor: "#EC0505FF",
                 height: 75,
                 marginTop: 10,
                 borderRadius: 20,
@@ -168,7 +170,7 @@ const WalletContainer: React.FC<WalletContainerProps> = ({
       </Animated.View>
     );
   }
-
+  const textColor = isDarkMode ? "white" : "black";
   return (
     <ReanimatedSwipeable
       containerStyle={[styles.swipeable, containerAnimStyle]}
@@ -183,7 +185,7 @@ const WalletContainer: React.FC<WalletContainerProps> = ({
       <Animated.View style={{ height: 10 }} />
       <Animated.View
         onTouchEnd={() => {
-           vibrateAnimatedEnd();
+          vibrateAnimatedEnd();
           handleOpenWallet();
         }}
         // onPressOut={() => {
@@ -193,7 +195,7 @@ const WalletContainer: React.FC<WalletContainerProps> = ({
       >
         <View
           style={{
-            backgroundColor: "#262626FF",
+            backgroundColor: isDarkMode ? "#262626FF" : "#D6EDEFFF",
             padding: 10,
             borderRadius: 20,
             width: "100%",
@@ -212,7 +214,7 @@ const WalletContainer: React.FC<WalletContainerProps> = ({
             <View
               style={{
                 width: 60,
-                backgroundColor: "#00000074",
+                backgroundColor: isDarkMode ? "#00000074" : "#BFBFBF1A",
                 borderRadius: 999,
                 height: 60,
                 justifyContent: "center",
@@ -233,7 +235,7 @@ const WalletContainer: React.FC<WalletContainerProps> = ({
               <View
                 style={{
                   padding: 2,
-                  backgroundColor: "#024D49FF",
+                  backgroundColor: isDarkMode ? "#024D49FF" : "#04B675FF",
                   borderRadius: 10,
                 }}
               >
@@ -241,8 +243,8 @@ const WalletContainer: React.FC<WalletContainerProps> = ({
                   numberOfLines={1}
                   ellipsizeMode="tail"
                   style={{
-                    fontFamily: "satoshi-regular",
-                    color: "white",
+                    fontFamily: "Satoshi-Regular",
+                    color: textColor,
                     fontSize: 10,
                   }}
                 >
@@ -268,19 +270,24 @@ const WalletContainer: React.FC<WalletContainerProps> = ({
                 <Text
                   style={{
                     color: "white",
-                    fontFamily: "satoshi-black",
+                    fontFamily: "Satoshi-Black",
                     fontSize: 18,
                   }}
                 >
                   {balance ? balance + " SOL" : "--"}
                 </Text>
-                <Text style={{ fontFamily: "satoshi-black", color: "white" }}>
+                <Text
+                  style={{
+                    fontFamily: "Satoshi-Black",
+                    color: textColor,
+                  }}
+                >
                   $12000
                 </Text>
               </View>
               <Text
                 style={{
-                  color: "white",
+                  color: textColor,
                   fontFamily: "satoshi-light",
                   fontSize: 12,
                 }}

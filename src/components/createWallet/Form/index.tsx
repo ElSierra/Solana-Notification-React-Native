@@ -17,6 +17,7 @@ import Animated, {
 } from "react-native-reanimated";
 import { useAddWalletBottomSheet } from "../../../store/ui";
 import { useBottomSheetModal } from "@gorhom/bottom-sheet";
+import { useIsDarkMode } from "../../../hooks/getMode";
 
 export default function Form({ emoji }: { emoji: number }) {
   const [form, setForm] = useState({
@@ -149,6 +150,8 @@ export default function Form({ emoji }: { emoji: number }) {
       transform: [{ translateX: translateXName.value }],
     };
   });
+
+  const isDarkMode = useIsDarkMode();
   return (
     <View style={{ padding: 10, gap: 10 }}>
       <Animated.View style={walletNameStyle}>
@@ -168,14 +171,19 @@ export default function Form({ emoji }: { emoji: number }) {
 
       <TouchableOpacity style={{ marginTop: 20 }} onPress={handleSaveWallet}>
         <View
-          style={{ backgroundColor: "white", padding: 15, borderRadius: 10 }}
+          style={{
+            backgroundColor: isDarkMode ? "white" : "black",
+            padding: 15,
+            borderRadius: 10,
+          }}
         >
           <View style={{ justifyContent: "center", alignItems: "center" }}>
             <Text
               style={{
-                fontFamily: "satoshi-medium",
+                fontFamily: "Satoshi-Medium",
                 textAlign: "center",
                 fontSize: 16,
+                color: isDarkMode ? "black" : "white",
               }}
             >
               Save Wallet
