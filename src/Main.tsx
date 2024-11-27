@@ -48,7 +48,7 @@ import { AnimatedIcon } from "./components/CustomTabBar/AnimatedIcon";
 import { Theme } from "./constants/Theme";
 import { StatusBar } from "expo-status-bar";
 import Likes from "./Screens/EmojiList";
-import Profile from "./Screens/Profile";
+import Profile from "./Screens/SignIn";
 import { ViewWallet } from "./Screens/ViewWallet";
 import {
   Canvas,
@@ -74,6 +74,8 @@ import { AddWalletBottomSheet } from "./components/bottom-sheet/AddWalletBottomS
 import EmojiList from "./Screens/EmojiList";
 import { LinearGradient } from "expo-linear-gradient";
 import { DarkModeIcon } from "./components/CustomTabBar/DarkModeIcon";
+import { createDrawerNavigator } from "@react-navigation/drawer";
+import SignIn from "./Screens/SignIn";
 type RootStackParamList = StaticParamList<typeof RootStack>;
 
 declare global {
@@ -81,6 +83,12 @@ declare global {
     interface RootParamList extends RootStackParamList {}
   }
 }
+
+const MyDrawer = createDrawerNavigator({
+  screens: {
+    Home: Home,
+  },
+});
 const MyTabs = createBottomTabNavigator({
   tabBar: (props) => <CustomTabBar {...props} />,
 
@@ -169,7 +177,11 @@ const RootStack = createNativeStackNavigator({
   },
 
   screens: {
+    SignIn: {
+      screen: SignIn,
+    },
     Tabs: MyTabs,
+
     EmojiList: {
       screen: EmojiList,
       options: {

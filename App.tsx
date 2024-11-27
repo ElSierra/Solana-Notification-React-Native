@@ -26,6 +26,7 @@ import {
 //   duration: 1000,
 //   fade: true,
 // });
+import DrawerLayout from 'react-native-gesture-handler/DrawerLayout';
 enableFreeze(true);
 export default function App() {
   const [loaded, error] = useFonts({
