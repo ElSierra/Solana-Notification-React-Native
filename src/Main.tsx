@@ -1,4 +1,11 @@
-import { View, Text, useWindowDimensions, Platform } from "react-native";
+import {
+  View,
+  Text,
+  useWindowDimensions,
+  Platform,
+  Touchable,
+  TouchableOpacity,
+} from "react-native";
 import React, {
   useCallback,
   useEffect,
@@ -43,8 +50,8 @@ import {
   ProfileIconFocused,
   ProfileIconUnfocused,
 } from "./components/global/icons";
-import CustomTabBar from "./components/CustomTabBar";
-import { AnimatedIcon } from "./components/CustomTabBar/AnimatedIcon";
+import CustomTabBar from "./components/global/CustomTabBar";
+import { AnimatedIcon } from "./components/global/CustomTabBar/AnimatedIcon";
 import { Theme } from "./constants/Theme";
 import { StatusBar } from "expo-status-bar";
 import Likes from "./Screens/EmojiList";
@@ -69,13 +76,17 @@ import {
   useMode,
   useViewWalletBottomSheet,
 } from "./store/ui";
-import { AddWalletBottomSheet } from "./components/bottom-sheet/AddWalletBottomSheet";
+import { AddWalletBottomSheet } from "./components/global/bottom-sheet/AddWalletBottomSheet";
 
 import EmojiList from "./Screens/EmojiList";
 import { LinearGradient } from "expo-linear-gradient";
-import { DarkModeIcon } from "./components/CustomTabBar/DarkModeIcon";
+import { DarkModeIcon } from "./components/global/CustomTabBar/DarkModeIcon";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import SignIn from "./Screens/SignIn";
+import { useIsNotSignedIn, useIsSignedIn } from "./hooks/isSignedIn";
+import { Image } from "expo-image";
+import CreateWallet from "./components/global/createWallet/CreateWallet";
+import { ReactScan } from "react-scan/native";
 type RootStackParamList = StaticParamList<typeof RootStack>;
 
 declare global {
@@ -85,8 +96,44 @@ declare global {
 }
 
 const MyDrawer = createDrawerNavigator({
+  screenOptions: {
+    header: ({ navigation }) => {
+      const { top } = useSafeAreaInsets();
+      const rotateX = useSharedValue(0);
+      console.log("🚀 ~ file: Main.tsx:94 ~ top:", top);
+      const style = useAnimatedStyle(() => {
+        return {
+          transform: [{ rotateX: `${rotateX.value}deg` }],
+        };
+      });
+      return (
+        <View
+          style={{
+            backgroundColor: "transparent",
+            position: "absolute",
+            marginTop: top,
+          }}
+        >
+          <TouchableOpacity
+            onPress={() => {
+              navigation.openDrawer();
+            }}
+          >
+            <Animated.Image
+              source={require("../assets/icon.png")}
+              style={[{ width: 80, height: 100 }, style]}
+            />
+          </TouchableOpacity>
+        </View>
+      );
+    },
+    headerStyle: {
+      backgroundColor: "transparent",
+      elevation: 0,
+    },
+  },
   screens: {
-    Home: Home,
+    DrawerHome: Home,
   },
 });
 const MyTabs = createBottomTabNavigator({
@@ -115,7 +162,7 @@ const MyTabs = createBottomTabNavigator({
           />
         ),
       },
-      screen: Home,
+      screen: MyDrawer,
     },
     Explore: {
       options: {
@@ -172,20 +219,36 @@ const RootStack = createNativeStackNavigator({
   screenOptions: {
     headerShown: false,
     contentStyle: {
-      backgroundColor: "transparent",
+      backgroundColor: "black",
     },
   },
 
   screens: {
     SignIn: {
+      if: useIsNotSignedIn,
       screen: SignIn,
+      options: {
+        animation: "simple_push",
+      },
     },
-    Tabs: MyTabs,
+    Tabs: {
+      if: useIsSignedIn,
+      screen: MyTabs,
+      options: {
+        animation: "simple_push",
+      },
+    },
 
     EmojiList: {
       screen: EmojiList,
       options: {
         presentation: "modal",
+      },
+    },
+    CreateWallet: {
+      screen: CreateWallet,
+      options: {
+        presentation: "formSheet",
       },
     },
     ViewWallet: {
@@ -344,7 +407,9 @@ export default function Main() {
               }}
             />
           </View>
-          <Navigation />
+      
+            <Navigation />
+        
         </Animated.View>
       </BottomSheetModalProvider>
     </>

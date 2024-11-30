@@ -1,4 +1,4 @@
-import { View, Text, Pressable } from "react-native";
+import { View, Text, Pressable, Platform } from "react-native";
 import React from "react";
 import { AddIcon } from "../../global/icons";
 import { useNavigation } from "@react-navigation/native";
@@ -12,8 +12,9 @@ import Animated, {
 } from "react-native-reanimated";
 import ReactNativeHapticFeedback from "react-native-haptic-feedback";
 import { useIsDarkMode } from "../../../hooks/getMode";
+import { HomeNavigationProp } from "../../../../types/navigation";
 export default function AddWallet() {
-  const navigation = useNavigation();
+  const navigation = useNavigation<HomeNavigationProp>();
   const toggleState = useAddWalletBottomSheet((state) => state.toggle);
   const vibrateAnimatedEnd = () => {
     const options = {
@@ -31,8 +32,9 @@ export default function AddWallet() {
       opacity.value = withTiming(0.5, { duration: 100 });
 
       runOnJS(vibrateAnimatedEnd)();
+      Platform.OS === "ios" && runOnJS(navigation.navigate)("CreateWallet" as any);
 
-      runOnJS(toggleState)();
+      Platform.OS === "android" && runOnJS(toggleState)();
     })
     .onStart(() => {
       scale.value = withTiming(1, { duration: 100 });

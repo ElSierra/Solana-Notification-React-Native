@@ -21,14 +21,14 @@ import {
   createBottomTabNavigator,
   useBottomTabBarHeight,
 } from "@react-navigation/bottom-tabs";
-import { Theme } from "../../constants/Theme";
+import { Theme } from "../../../constants/Theme";
 import { PlatformPressable } from "@react-navigation/elements";
 import ReactNativeHapticFeedback from "react-native-haptic-feedback";
 import { BlurView } from "expo-blur";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useHideTabBar, useMode } from "../../store/ui";
+import { useHideTabBar, useMode } from "../../../store/ui";
 import { LinearGradient } from "expo-linear-gradient";
-import { useIsDarkMode } from "../../hooks/getMode";
+import { useIsDarkMode } from "../../../hooks/getMode";
 import switchTheme from "react-native-theme-switch-animation";
 
 export default function CustomTabBar({
@@ -137,7 +137,7 @@ export default function CustomTabBar({
       <LinearGradient
         colors={
           isDarkMode
-            ? ["rgba(255,255,255,0)", "#04B6754E"]
+            ? ["rgba(255,255,255,0)", "#00311F4E"]
             : ["rgba(255,255,255,0)", "#04B6753F"]
         }
         style={{

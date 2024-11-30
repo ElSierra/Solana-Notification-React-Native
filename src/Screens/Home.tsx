@@ -22,6 +22,8 @@ import { useEmojiBottomSheet, useMode } from "../store/ui";
 import { useWalletStore } from "../store/wallet";
 import switchTheme from "react-native-theme-switch-animation";
 import { useIsDarkMode } from "../hooks/getMode";
+import { useAuth } from "../store/auth";
+import { LinearGradient } from "expo-linear-gradient";
 
 export default function Home() {
   const bottomTabHeight = useBottomTabBarHeight();
@@ -58,32 +60,45 @@ export default function Home() {
 
   useEffect(() => {}, []);
   const mode = useMode();
-
+  const setType = useAuth((state) => state.setType);
   const isDarkMode = useIsDarkMode();
   const textColor = isDarkMode ? "white" : "black";
   return (
     <View style={{ flex: 1 }}>
       <View
         style={{
-          flex: 1,
           position: "absolute",
-          height: "100%",
-          width: "100%",
-          opacity: 1,
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          zIndex: 0,
         }}
       >
         {/* <Canvas style={{ flex: 1 }}>
-          <Group dither>
-            <RadialGradient
-              c={vec(width / 3, height)}
-              r={900}
-              colors={["#00000094", "#01272AFF"]}
-            />
-
-            <Rect x={0} y={0} width={width} height={height + 40} />
-            <Fill color="#00000027" />
-          </Group>
-        </Canvas> */}
+            <Group dither>
+              <RadialGradient
+                c={vec(width / 3, height)}
+                r={900}
+                colors={["#00000094", "#01272AFF"]}
+              />
+              <Rect x={0} y={0} width={width} height={height + 40} />
+              <Fill color="#00000027" />
+            </Group>
+          </Canvas> */}
+        <LinearGradient
+          colors={
+            isDarkMode ? ["#002327FF", "#000000FF"] : ["#E6FCFEFF", "#FFFFFFFF"]
+          }
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            height: height + 40,
+            zIndex: 0,
+          }}
+        />
       </View>
       <Animated.View
         style={[
@@ -103,7 +118,11 @@ export default function Home() {
           Total Sol
         </Text>
         <Text
-          style={{ fontFamily: "Satoshi-Black", color: textColor, fontSize: 30 }}
+          style={{
+            fontFamily: "Satoshi-Black",
+            color: textColor,
+            fontSize: 30,
+          }}
         >
           0.0000 SOL
         </Text>
@@ -117,7 +136,12 @@ export default function Home() {
           $100.00 USD
         </Text>
       </Animated.View>
-    
+      <Button
+        title="logout"
+        onPress={() => {
+          setType(null);
+        }}
+      />
       <List offsetY={offsetY} offsetHeight={offsetHeight} />
     </View>
   );

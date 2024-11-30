@@ -28,6 +28,7 @@ import { FlashList } from "@shopify/flash-list";
 import { useWalletStore } from "../../../store/wallet";
 import { emojis } from "../../../data/emoji";
 import { useIsDarkMode } from "../../../hooks/getMode";
+import { useNavigation } from "@react-navigation/native";
 
 type ListProps = {
   offsetY: SharedValue<number>;
@@ -77,7 +78,7 @@ export const List: React.FC<ListProps> = ({ offsetY, offsetHeight }) => {
   //     },
   //     [scrollingUp,]
   //   );
-
+  const navigation = useNavigation();
   const animListStyle = useAnimatedStyle(() => {
     return {
       transform: [

@@ -7,8 +7,8 @@ import Animated, {
   useDerivedValue,
 } from "react-native-reanimated";
 import { View, useColorScheme } from "react-native";
-import { Theme } from "../../constants/Theme";
-import { useIsDarkMode } from "../../hooks/getMode";
+import { Theme } from "../../../constants/Theme";
+import { useIsDarkMode } from "../../../hooks/getMode";
 
 export const CustomBackground: React.FC<BottomSheetBackgroundProps> = ({
   style,

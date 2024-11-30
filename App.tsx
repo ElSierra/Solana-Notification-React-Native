@@ -26,8 +26,19 @@ import {
 //   duration: 1000,
 //   fade: true,
 // });
-import DrawerLayout from 'react-native-gesture-handler/DrawerLayout';
+import DrawerLayout from "react-native-gesture-handler/DrawerLayout";
+import { useAnimationFinished } from "./src/store/ui";
+import {
+  configureReanimatedLogger,
+  ReanimatedLogLevel,
+} from "react-native-reanimated";
+import { ReactScan } from "react-scan/native";
+
 enableFreeze(true);
+configureReanimatedLogger({
+  level: ReanimatedLogLevel.warn,
+  strict: false, // Reanimated runs in strict mode by default
+});
 export default function App() {
   const [loaded, error] = useFonts({
     // noto: require("./assets/fonts/NotoColorEmoji.ttf"),
@@ -42,7 +53,13 @@ export default function App() {
   });
   const [appIsReady, setAppIsReady] = useState(false);
   const { width: windowWith, height: windowHeight } = useWindowDimensions();
-  const [animationFinished, setAnimationFinished] = useState(false);
+
+  const setAnimationFinished = useAnimationFinished(
+    (state) => state.setAnimationFinished
+  );
+  const animationFinished = useAnimationFinished(
+    (state) => state.animationFinished
+  );
   useLayoutEffect(() => {
     if (loaded) {
       setAppIsReady(true);
@@ -74,7 +91,7 @@ export default function App() {
           style={"dark"}
           backgroundColor="transparent"
         />
-      
+
         {!animationFinished && (
           <View
             style={{

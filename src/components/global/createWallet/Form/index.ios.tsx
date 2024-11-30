@@ -1,10 +1,10 @@
-import { View, Text, TouchableOpacity, Keyboard } from "react-native";
+import { View, Text, TouchableOpacity, Keyboard, useWindowDimensions } from "react-native";
 import React, { useEffect, useState } from "react";
 import { WalletInput } from "./WalletInput";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
-import { useWalletStore } from "../../../store/wallet";
+import { useWalletStore } from "../../../../store/wallet";
 import { toast } from "sonner-native";
-import { isValidSolanaWallet } from "../../../util/getIsValidSolanaWallet";
+import { isValidSolanaWallet } from "../../../../util/getIsValidSolanaWallet";
 import { set } from "lodash";
 import Animated, {
   runOnJS,
@@ -15,9 +15,8 @@ import Animated, {
   withSequence,
   withTiming,
 } from "react-native-reanimated";
-import { useAddWalletBottomSheet } from "../../../store/ui";
-import { useBottomSheetModal } from "@gorhom/bottom-sheet";
-import { useIsDarkMode } from "../../../hooks/getMode";
+import { useAddWalletBottomSheet } from "../../../../store/ui";
+import { useIsDarkMode } from "../../../../hooks/getMode";
 
 export default function Form({ emoji }: { emoji: number }) {
   const [form, setForm] = useState({
@@ -26,7 +25,7 @@ export default function Form({ emoji }: { emoji: number }) {
     emoji,
   });
   console.log("🚀 ~ file: index.tsx:22 ~ Form ~ form:", form);
-  const { dismiss, dismissAll } = useBottomSheetModal();
+
   const toggleSheetState = useAddWalletBottomSheet((state) => state.toggle);
   const addToWalletList = useWalletStore((state) => state.addWalletData);
   const walletData = useWalletStore((state) => state.walletData);
@@ -72,7 +71,6 @@ export default function Form({ emoji }: { emoji: number }) {
     ({ keyboardHeight, dismissedState }) => {
       if (keyboardHeight === 0 && dismissedState) {
         console.log("🚀 ~ file: index.tsx:64 ~ dismissedState", dismissedState);
-        runOnJS(dismiss)();
       }
     }
   );
@@ -152,8 +150,9 @@ export default function Form({ emoji }: { emoji: number }) {
   });
 
   const isDarkMode = useIsDarkMode();
+  const {height} = useWindowDimensions();
   return (
-    <View style={{ padding: 10, gap: 10 }}>
+    <View style={{ padding: 10, gap: 10 ,height, marginTop:100}}>
       <Animated.View style={walletNameStyle}>
         <WalletInput
           placeholder="Wallet Name"

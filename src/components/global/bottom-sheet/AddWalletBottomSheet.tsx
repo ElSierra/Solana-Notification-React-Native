@@ -16,7 +16,7 @@ import CustomBackground from "./CustomBg";
 import { Easing, SharedValue, useSharedValue } from "react-native-reanimated";
 import { StyleSheet } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useAddWalletBottomSheet } from "../../store/ui";
+import { useAddWalletBottomSheet } from "../../../store/ui";
 import CreateWallet from "../createWallet/CreateWallet";
 import * as Crypto from "expo-crypto";
 
@@ -78,7 +78,6 @@ export const AddWalletBottomSheet: React.FC<CustomBottomSheetProps> = ({
       toggleSheetState();
     }
   }, []);
-
 
   return (
     <BottomSheetModal

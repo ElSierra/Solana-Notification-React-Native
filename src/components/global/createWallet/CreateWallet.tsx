@@ -11,19 +11,20 @@ import {
 } from "react-native";
 import React, { useEffect, useMemo, useState } from "react";
 import { FlashList } from "@shopify/flash-list";
-import { emojis } from "../../data/emoji";
-import { getMaxColumns } from "../../util/getMaxColumns";
+import { emojis } from "../../../data/emoji";
+import { getMaxColumns } from "../../../util/getMaxColumns";
 import { BlurView } from "expo-blur";
-import { Theme } from "../../constants/Theme";
-import EmojiContainer from "../bottom-sheet/EmojiContainer";
+import { Theme } from "../../../constants/Theme";
+
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
 } from "react-native-reanimated";
 import Form from "./Form";
-import { useIsDarkMode } from "../../hooks/getMode";
+import { useIsDarkMode } from "../../../hooks/getMode";
+import EmojiContainer from "../bottom-sheet/EmojiContainer";
 
-export default function CreateWallet() {
+function CreateWallet() {
   const getRandomNumberFromRange = (min: number, max: number) => {
     return Math.floor(Math.random() * (max - min + 1) + min);
   };
@@ -196,7 +197,7 @@ export default function CreateWallet() {
               <Text
                 style={{
                   fontFamily: "windows",
-                  
+
                   fontSize: 60,
                 }}
               >
@@ -254,3 +255,5 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
 });
+
+export default React.memo(CreateWallet);

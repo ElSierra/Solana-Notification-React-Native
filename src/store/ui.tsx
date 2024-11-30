@@ -79,3 +79,13 @@ export const useMode = create<ModeState>()(
     }
   )
 );
+
+type AnimationFinished = {
+  animationFinished: boolean;
+  setAnimationFinished: (animationFinished: boolean) => void;
+};
+
+export const useAnimationFinished = create<AnimationFinished>((set) => ({
+  animationFinished: false,
+  setAnimationFinished: (animationFinished) => set({ animationFinished }),
+}));
