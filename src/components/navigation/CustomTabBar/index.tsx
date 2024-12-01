@@ -75,7 +75,7 @@ export default function CustomTabBar({
   }, []);
 
   const x = useSharedValue(0);
-  const y = useSharedValue(0);
+
   const width = useSharedValue(0);
   const focusedIndex = state.index;
   const indicatorStyle = useAnimatedStyle(() => {
@@ -103,12 +103,6 @@ export default function CustomTabBar({
     }
   );
 
-  const tabBarY = useSharedValue(80);
-  const tabBarAnimStyle = useAnimatedStyle(() => {
-    return {
-      transform: [{ translateY: tabBarY.value }],
-    };
-  });
 
   const isDarkMode = useIsDarkMode();
   const toggleMode = useMode((state) => state.toggleMode);
