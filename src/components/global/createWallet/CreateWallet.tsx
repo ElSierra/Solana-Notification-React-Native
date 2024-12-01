@@ -25,6 +25,7 @@ import { useIsDarkMode } from "../../../hooks/getMode";
 import EmojiContainer from "../bottom-sheet/EmojiContainer";
 
 function CreateWallet() {
+  
   const getRandomNumberFromRange = (min: number, max: number) => {
     return Math.floor(Math.random() * (max - min + 1) + min);
   };

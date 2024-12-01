@@ -12,7 +12,7 @@ import {
   Group,
 } from "@shopify/react-native-skia";
 
-import { List } from "../components/Home/List";
+import { List, MemoizedList } from "../components/Home/List";
 import Animated, {
   interpolate,
   useAnimatedStyle,
@@ -24,6 +24,7 @@ import switchTheme from "react-native-theme-switch-animation";
 import { useIsDarkMode } from "../hooks/getMode";
 import { useAuth } from "../store/auth";
 import { LinearGradient } from "expo-linear-gradient";
+import LinearBackground from "../components/global/LinearBackground";
 
 export default function Home() {
   const bottomTabHeight = useBottomTabBarHeight();
@@ -86,19 +87,7 @@ export default function Home() {
               <Fill color="#00000027" />
             </Group>
           </Canvas> */}
-        <LinearGradient
-          colors={
-            isDarkMode ? ["#002327FF", "#000000FF"] : ["#E6FCFEFF", "#FFFFFFFF"]
-          }
-          style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            right: 0,
-            height: height + 40,
-            zIndex: 0,
-          }}
-        />
+        {/*  */}
       </View>
       <Animated.View
         style={[
@@ -136,13 +125,8 @@ export default function Home() {
           $100.00 USD
         </Text>
       </Animated.View>
-      <Button
-        title="logout"
-        onPress={() => {
-          setType(null);
-        }}
-      />
-      <List offsetY={offsetY} offsetHeight={offsetHeight} />
+
+      <MemoizedList />
     </View>
   );
 }

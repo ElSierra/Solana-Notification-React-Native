@@ -5,6 +5,7 @@ import Animated, {
   interpolateColor,
   useAnimatedReaction,
   useDerivedValue,
+  interpolate,
 } from "react-native-reanimated";
 import { View, useColorScheme } from "react-native";
 import { Theme } from "../../../constants/Theme";
@@ -16,6 +17,13 @@ export const CustomBackground: React.FC<BottomSheetBackgroundProps> = ({
 }) => {
   //#region styles
   const isDarkMode = useIsDarkMode();
+  useAnimatedReaction(
+    () => animatedIndex.value,
+    (value) => {
+      console.log(value);
+    },
+    []
+  );
 
   const bg = useDerivedValue(() => {
     if (isDarkMode) {
@@ -25,6 +33,7 @@ export const CustomBackground: React.FC<BottomSheetBackgroundProps> = ({
   });
   const animStyle = useAnimatedStyle(() => ({
     backgroundColor: bg.value,
+    opacity: interpolate(animatedIndex.value, [-0.9, 0], [0, 1]),
   }));
 
   // render

@@ -18,18 +18,20 @@ export const SignWithGoogle = () => {
   const bg = !isDarkMode ? "black" : "white";
   const style = useAnimatedStyle(() => {
     return {
-      transform: [{ scaleX: scale.value },{ scaleY: scale.value }],
+      transform: [{ scaleX: scale.value }, { scaleY: scale.value }],
     };
   });
   const tap = Gesture.Tap()
     .onBegin((e) => {
+      "worklet";
       scale.value = withSpring(0.9);
     })
     .onStart((e) => {
+      "worklet";
       scale.value = withSpring(1);
-      runOnJS(navigation.navigate)("Tabs" as any);
+      // runOnJS(navigation.navigate)("Tabs" as any);
     })
-    .onEnd((e) => {});
+
   return (
     <GestureDetector gesture={tap}>
       <Animated.View

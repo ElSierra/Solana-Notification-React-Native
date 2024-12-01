@@ -29,11 +29,9 @@ import { useWalletStore } from "../../../store/wallet";
 import { emojis } from "../../../data/emoji";
 import { useIsDarkMode } from "../../../hooks/getMode";
 import { useNavigation } from "@react-navigation/native";
+import React from "react";
 
-type ListProps = {
-  offsetY: SharedValue<number>;
-  offsetHeight: SharedValue<number>;
-};
+type ListProps = {};
 const renderItem = ({
   item,
 }: {
@@ -48,10 +46,13 @@ const renderItem = ({
   return <WalletContainer {...item} />;
 };
 
-export const List: React.FC<ListProps> = ({ offsetY, offsetHeight }) => {
+export const List: React.FC<ListProps> = () => {
   const deleteAllWallets = useWalletStore((state) => state.deleteAllWallets);
   const walletList = useWalletStore((state) => state.walletData);
+  useEffect(() => {
 
+    console.log("rendering list");
+  }, []);
   // useAnimatedReaction(
   //   () =>scrollingUp.value,
   //   (value) => {
@@ -78,21 +79,6 @@ export const List: React.FC<ListProps> = ({ offsetY, offsetHeight }) => {
   //     },
   //     [scrollingUp,]
   //   );
-  const navigation = useNavigation();
-  const animListStyle = useAnimatedStyle(() => {
-    return {
-      transform: [
-        {
-          translateY: interpolate(
-            offsetY.value,
-            [0, 400],
-            [0, -100],
-            Extrapolation.CLAMP
-          ),
-        },
-      ],
-    };
-  });
 
   // const scrollHandler = useAnimatedScrollHandler((event) => {
   //   offsetY.value = event.contentOffset.y;
@@ -131,6 +117,7 @@ export const List: React.FC<ListProps> = ({ offsetY, offsetHeight }) => {
         // estimatedItemSize={100}
         //performance settings
         // ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
+        removeClippedSubviews
         contentContainerStyle={{ padding: 10, paddingBottom: 400 }}
         data={walletList}
         ListFooterComponent={() => <AddWallet />}
@@ -187,3 +174,5 @@ const styles = StyleSheet.create({
     zIndex: 999,
   },
 });
+
+export const MemoizedList = React.memo(List);

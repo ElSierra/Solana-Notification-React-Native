@@ -27,6 +27,7 @@ import { TrashIcon } from "../../global/icons";
 import { emojis } from "../../../data/emoji";
 import { useWalletStore } from "../../../store/wallet";
 import { useIsDarkMode } from "../../../hooks/getMode";
+import RightAction from "./RightAction";
 type WalletContainerProps = {
   walletName: string;
   walletAddress: string;
@@ -97,29 +98,6 @@ const WalletContainer: React.FC<WalletContainerProps> = ({
   };
   const scale = useSharedValue(1);
   const opacity = useSharedValue(1);
-  const gesture = Gesture.Tap()
-    .onBegin(() => {
-      // scale.value = withTiming(0.9, { duration: 100 }, (finished) => {
-      //   // if (finished) {
-      //   //   scale.value = withDelay(0, withTiming(1, { duration: 100 }));
-      //   // }
-      // });
-      // opacity.value = withTiming(0.5, { duration: 100 }, (finished) => {
-      //   if (finished) {
-      //     opacity.value = withDelay(0, withTiming(1, { duration: 100 }));
-      //   }
-      // });
-    })
-    .onStart(() => {
-      runOnJS(handleDeleteWallet)();
-    });
-
-  const gestureAnimStyle = useAnimatedStyle(() => {
-    return {
-      transform: [{ scale: scale.value }],
-      opacity: opacity.value,
-    };
-  });
 
   useAnimatedReaction(
     () => containerDrag.value,
@@ -134,42 +112,16 @@ const WalletContainer: React.FC<WalletContainerProps> = ({
     };
   });
 
-  const composed = Gesture.Simultaneous(gesture);
-
-  function RightAction(prog: SharedValue<number>, drag: SharedValue<number>) {
-    // eslint-disable-next-line react-compiler/react-compiler
-    const styleAnimation = useAnimatedStyle(() => {
-      return {
-        transform: [{ translateX: drag.value + 80 }],
-        opacity: prog.value,
-      };
+  const gesture = Gesture.Tap()
+    .onBegin(() => {
+      "worklet";
+    })
+    .onEnd(() => {
+      "worklet";
+      scale.value = withTiming(1);
+      runOnJS(handleOpenWallet)();
     });
 
-    return (
-      <Animated.View style={[styleAnimation, { flexDirection: "row" }]}>
-        <View style={{ width: 5, height: 10 }} />
-
-        <GestureDetector gesture={gesture}>
-          <View style={styles.rightAction}>
-            <View
-              style={{
-                backgroundColor: "#EC0505FF",
-                height: 75,
-                marginTop: 10,
-                borderRadius: 20,
-
-                width: "100%",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <TrashIcon size={30} color="white" />
-            </View>
-          </View>
-        </GestureDetector>
-      </Animated.View>
-    );
-  }
   const textColor = isDarkMode ? "white" : "black";
   return (
     <ReanimatedSwipeable
@@ -179,127 +131,119 @@ const WalletContainer: React.FC<WalletContainerProps> = ({
       rightThreshold={80}
       renderRightActions={(prog, drag) => {
         containerDrag.value = drag.value;
-        return RightAction(prog, drag);
+        return RightAction(prog, drag, handleDeleteWallet);
       }}
     >
       <Animated.View style={{ height: 10 }} />
-      <Animated.View
-        onTouchEnd={() => {
-          vibrateAnimatedEnd();
-          handleOpenWallet();
-        }}
-        // onPressOut={() => {
-        //   scale.value = withTiming(1, { duration: 100 });
-        //   opacity.value = withTiming(1, { duration: 100 });
-        // }}
-      >
-        <View
-          style={{
-            backgroundColor: isDarkMode ? "#262626FF" : "#D6EDEFFF",
-            padding: 10,
-            borderRadius: 20,
-            width: "100%",
-          }}
-        >
-          <Animated.View
-            style={[
-              {
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "space-between",
-              },
-              gestureAnimStyle,
-            ]}
+      <GestureDetector gesture={gesture}>
+        <Animated.View>
+          <View
+            style={{
+              backgroundColor: isDarkMode ? "#262626FF" : "#D6EDEFFF",
+              padding: 10,
+              borderRadius: 20,
+              width: "100%",
+            }}
           >
-            <View
-              style={{
-                width: 60,
-                backgroundColor: isDarkMode ? "#00000074" : "#BFBFBF1A",
-                borderRadius: 999,
-                height: 60,
-                justifyContent: "center",
-                alignItems: "center",
-                overflow: "hidden",
-                padding: 6,
-              }}
+            <Animated.View
+              style={[
+                {
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                },
+              ]}
             >
-              <Text
-                style={{
-                  fontSize: 25,
-                  includeFontPadding: false,
-                  fontFamily: "windows",
-                }}
-              >
-                {getEmojiFromId(emoji)}
-              </Text>
               <View
                 style={{
-                  padding: 2,
-                  backgroundColor: isDarkMode ? "#024D49FF" : "#04B675FF",
-                  borderRadius: 10,
+                  width: 60,
+                  backgroundColor: isDarkMode ? "#00000074" : "#BFBFBF1A",
+                  borderRadius: 999,
+                  height: 60,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  overflow: "hidden",
+                  padding: 6,
                 }}
               >
                 <Text
+                  style={{
+                    fontSize: 25,
+                    includeFontPadding: false,
+                    fontFamily: "windows",
+                  }}
+                >
+                  {getEmojiFromId(emoji)}
+                </Text>
+                <View
+                  style={{
+                    padding: 2,
+                    backgroundColor: isDarkMode ? "#024D49FF" : "#04B675FF",
+                    borderRadius: 10,
+                  }}
+                >
+                  <Text
+                    numberOfLines={1}
+                    ellipsizeMode="tail"
+                    style={{
+                      fontFamily: "Satoshi-Regular",
+                      color: textColor,
+                      fontSize: 10,
+                    }}
+                  >
+                    {walletName}
+                  </Text>
+                </View>
+              </View>
+              <View
+                style={{
+                  flex: 1,
+                  marginLeft: 10,
+                  justifyContent: "space-evenly",
+                  height: 60,
+                }}
+              >
+                <View
+                  style={{
+                    flexDirection: "row",
+                    width: "99%",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <Text
+                    style={{
+                      color: "white",
+                      fontFamily: "Satoshi-Black",
+                      fontSize: 18,
+                    }}
+                  >
+                    {balance ? balance + " SOL" : "--"}
+                  </Text>
+                  <Text
+                    style={{
+                      fontFamily: "Satoshi-Black",
+                      color: textColor,
+                    }}
+                  >
+                    $12000
+                  </Text>
+                </View>
+                <Text
+                  style={{
+                    color: textColor,
+                    fontFamily: "satoshi-light",
+                    fontSize: 12,
+                  }}
                   numberOfLines={1}
                   ellipsizeMode="tail"
-                  style={{
-                    fontFamily: "Satoshi-Regular",
-                    color: textColor,
-                    fontSize: 10,
-                  }}
                 >
-                  {walletName}
+                  {walletAddress}
                 </Text>
               </View>
-            </View>
-            <View
-              style={{
-                flex: 1,
-                marginLeft: 10,
-                justifyContent: "space-evenly",
-                height: 60,
-              }}
-            >
-              <View
-                style={{
-                  flexDirection: "row",
-                  width: "99%",
-                  justifyContent: "space-between",
-                }}
-              >
-                <Text
-                  style={{
-                    color: "white",
-                    fontFamily: "Satoshi-Black",
-                    fontSize: 18,
-                  }}
-                >
-                  {balance ? balance + " SOL" : "--"}
-                </Text>
-                <Text
-                  style={{
-                    fontFamily: "Satoshi-Black",
-                    color: textColor,
-                  }}
-                >
-                  $12000
-                </Text>
-              </View>
-              <Text
-                style={{
-                  color: textColor,
-                  fontFamily: "satoshi-light",
-                  fontSize: 12,
-                }}
-                numberOfLines={1}
-                ellipsizeMode="tail"
-              >
-                {walletAddress}
-              </Text>
-            </View>
-          </Animated.View>
-        </View>
-      </Animated.View>
+            </Animated.View>
+          </View>
+        </Animated.View>
+      </GestureDetector>
     </ReanimatedSwipeable>
   );
 };

@@ -8,7 +8,7 @@ import Animated, {
   withSpring,
   withTiming,
 } from "react-native-reanimated";
-import { IconProps, MoonIcon, SunIcon } from "../icons";
+import { IconProps, MoonIcon, SunIcon } from "../../global/icons";
 import { opacity } from "react-native-reanimated/lib/typescript/Colors";
 import { Theme } from "../../../constants/Theme";
 import { useIsDarkMode } from "../../../hooks/getMode";
@@ -23,13 +23,11 @@ export const DarkModeIcon: React.FC<AnimatedIconProps> = ({ size }) => {
 
   return (
     <View>
-      <View>
-        {isDark ? (
-          <SunIcon size={size} color="white" />
-        ) : (
-          <MoonIcon size={size} color="black" />
-        )}
-      </View>
+      {isDark ? (
+        <SunIcon size={size} color="white" />
+      ) : (
+        <MoonIcon size={size} color="black" />
+      )}
     </View>
   );
 };

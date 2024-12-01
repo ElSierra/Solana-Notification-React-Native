@@ -38,19 +38,6 @@ export default function Explore() {
               <Fill color="#00000027" />
             </Group>
           </Canvas> */}
-        <LinearGradient
-          colors={
-            isDarkMode ? ["#002327FF", "#000000FF"] : ["#E6FCFEFF", "#FFFFFFFF"]
-          }
-          style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            right: 0,
-            height: height + 40,
-            zIndex: 0,
-          }}
-        />
       </View>
     </View>
   );

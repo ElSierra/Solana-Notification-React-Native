@@ -27,10 +27,9 @@ export default function Form({ emoji }: { emoji: number }) {
   });
   console.log("🚀 ~ file: index.tsx:22 ~ Form ~ form:", form);
   const { dismiss, dismissAll } = useBottomSheetModal();
-  const toggleSheetState = useAddWalletBottomSheet((state) => state.toggle);
   const addToWalletList = useWalletStore((state) => state.addWalletData);
-  const walletData = useWalletStore((state) => state.walletData);
-  console.log("🚀 ~ file: index.tsx:16 ~ Form ~ walletData:", walletData);
+
+  
 
   const [isValidWallet, setIsValidWallet] = useState({
     walletName: false,

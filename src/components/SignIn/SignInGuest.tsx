@@ -10,26 +10,32 @@ import Animated, {
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import { useAuth } from "../../store/auth";
 import { useIsDarkMode } from "../../hooks/getMode";
+import { useState } from "react";
+import { Loading } from "../global/Loading";
 export const SignInGuest = () => {
   const scale = useSharedValue(1);
   const setAuth = useAuth((state) => state.setType);
   const isDarkMode = useIsDarkMode();
   const textColor = isDarkMode ? "white" : "black";
   const bg = !isDarkMode ? "black" : "white";
+  const [clicked, setClicked] = useState(false);
   const style = useAnimatedStyle(() => {
     return {
-      transform: [{ scaleX: scale.value },{scaleY: scale.value }],
+      transform: [{ scaleX: scale.value }, { scaleY: scale.value }],
     };
   });
   const tap = Gesture.Tap()
     .onBegin((e) => {
+      "worklet";
       scale.value = withSpring(0.9);
     })
     .onStart((e) => {
+      "worklet";
       runOnJS(setAuth)("guest");
+      runOnJS(setClicked)(true);
       scale.value = withSpring(1);
-    })
-    .onEnd((e) => {});
+    });
+
   return (
     <GestureDetector gesture={tap}>
       <Animated.View
@@ -48,9 +54,15 @@ export const SignInGuest = () => {
           style,
         ]}
       >
-        <Text style={{ color: textColor, fontFamily: Theme.fonts.SatoshiBold }}>
-          Guest
-        </Text>
+        {!clicked ? (
+          <Text
+            style={{ color: textColor, fontFamily: Theme.fonts.SatoshiBold }}
+          >
+            Guest
+          </Text>
+        ) : (
+          <Loading size={20} />
+        )}
       </Animated.View>
     </GestureDetector>
   );

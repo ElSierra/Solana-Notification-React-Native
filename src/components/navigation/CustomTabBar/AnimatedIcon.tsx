@@ -8,7 +8,7 @@ import Animated, {
   withSpring,
   withTiming,
 } from "react-native-reanimated";
-import { IconProps } from "../icons";
+import { IconProps } from "../../global/icons";
 import { opacity } from "react-native-reanimated/lib/typescript/Colors";
 import { Theme } from "../../../constants/Theme";
 import { useIsDarkMode } from "../../../hooks/getMode";
@@ -50,7 +50,10 @@ export const AnimatedIcon: React.FC<AnimatedIconProps> = ({
 
   const focusedStyle = useAnimatedStyle(() => {
     return {
-      transform: [{ scaleX: scaleIconFocused.value },{ scaleY: scaleIconFocused.value }],
+      transform: [
+        { scaleX: scaleIconFocused.value },
+        { scaleY: scaleIconFocused.value },
+      ],
       opacity: opacityFocused.value,
     };
   });

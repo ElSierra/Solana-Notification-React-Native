@@ -26,45 +26,10 @@ import Animated, {
 import {
   createStaticNavigation,
   StaticParamList,
-  useLinkBuilder,
-  useTheme,
 } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import {
-  BottomTabBarProps,
-  createBottomTabNavigator,
-  SceneStyleInterpolators,
-} from "@react-navigation/bottom-tabs";
-import Home from "./Screens/Home";
-import Explore from "./Screens/Explore";
-import { PlatformPressable } from "@react-navigation/elements";
-import { Feather } from "@expo/vector-icons";
-import {
-  DiscoverIconFocused,
-  DiscoverIconUnfocused,
-  ExploreIcon,
-  HomeFocused,
-  HomeIcon,
-  LikeIconFocused,
-  LikeIconUnfocused,
-  ProfileIconFocused,
-  ProfileIconUnfocused,
-} from "./components/global/icons";
-import CustomTabBar from "./components/global/CustomTabBar";
-import { AnimatedIcon } from "./components/global/CustomTabBar/AnimatedIcon";
-import { Theme } from "./constants/Theme";
+
 import { StatusBar } from "expo-status-bar";
-import Likes from "./Screens/EmojiList";
-import Profile from "./Screens/SignIn";
-import { ViewWallet } from "./Screens/ViewWallet";
-import {
-  Canvas,
-  vec,
-  Rect,
-  Group,
-  RadialGradient,
-  Fill,
-} from "@shopify/react-native-skia";
+
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import {
   BottomSheetModal,
@@ -74,19 +39,12 @@ import {
   useAddWalletBottomSheet,
   useEmojiBottomSheet,
   useMode,
-  useViewWalletBottomSheet,
 } from "./store/ui";
-import { AddWalletBottomSheet } from "./components/global/bottom-sheet/AddWalletBottomSheet";
+import AddWalletBottomSheet  from "./components/global/bottom-sheet/AddWalletBottomSheet";
 
-import EmojiList from "./Screens/EmojiList";
 import { LinearGradient } from "expo-linear-gradient";
-import { DarkModeIcon } from "./components/global/CustomTabBar/DarkModeIcon";
-import { createDrawerNavigator } from "@react-navigation/drawer";
-import SignIn from "./Screens/SignIn";
-import { useIsNotSignedIn, useIsSignedIn } from "./hooks/isSignedIn";
-import { Image } from "expo-image";
-import CreateWallet from "./components/global/createWallet/CreateWallet";
-import { ReactScan } from "react-scan/native";
+
+import { RootStack } from "./navigation/RootStackNavigtaion";
 type RootStackParamList = StaticParamList<typeof RootStack>;
 
 declare global {
@@ -94,179 +52,6 @@ declare global {
     interface RootParamList extends RootStackParamList {}
   }
 }
-
-const MyDrawer = createDrawerNavigator({
-  screenOptions: {
-    header: ({ navigation }) => {
-      const { top } = useSafeAreaInsets();
-      const rotateX = useSharedValue(0);
-      console.log("🚀 ~ file: Main.tsx:94 ~ top:", top);
-      const style = useAnimatedStyle(() => {
-        return {
-          transform: [{ rotateX: `${rotateX.value}deg` }],
-        };
-      });
-      return (
-        <View
-          style={{
-            backgroundColor: "transparent",
-            position: "absolute",
-            marginTop: top,
-          }}
-        >
-          <TouchableOpacity
-            onPress={() => {
-              navigation.openDrawer();
-            }}
-          >
-            <Animated.Image
-              source={require("../assets/icon.png")}
-              style={[{ width: 80, height: 100 }, style]}
-            />
-          </TouchableOpacity>
-        </View>
-      );
-    },
-    headerStyle: {
-      backgroundColor: "transparent",
-      elevation: 0,
-    },
-  },
-  screens: {
-    DrawerHome: Home,
-  },
-});
-const MyTabs = createBottomTabNavigator({
-  tabBar: (props) => <CustomTabBar {...props} />,
-
-  screenOptions: {
-    headerShown: false,
-    animation: "shift",
-
-    sceneStyle: {
-      backgroundColor: "transparent",
-    },
-
-    //background color of page
-  },
-
-  screens: {
-    Home: {
-      options: {
-        tabBarIcon: ({ color, size, focused }) => (
-          <AnimatedIcon
-            focused={focused}
-            size={size}
-            FocusedIcon={HomeFocused}
-            UnfocusedIcon={HomeIcon}
-          />
-        ),
-      },
-      screen: MyDrawer,
-    },
-    Explore: {
-      options: {
-        tabBarIcon: ({ color, size, focused }) => (
-          <AnimatedIcon
-            focused={focused}
-            size={size}
-            FocusedIcon={DiscoverIconFocused}
-            UnfocusedIcon={DiscoverIconUnfocused}
-          />
-        ),
-      },
-      screen: Explore,
-    },
-
-    DarkMode: {
-      options: {
-        //MAKE THE ICON JUST A BUTTON
-
-        tabBarIcon: ({ color, size, focused }) => <DarkModeIcon size={size} />,
-      },
-      screen: Home,
-    },
-    // Likes: {
-    //   options: {
-    //     tabBarIcon: ({ color, size, focused }) => (
-    //       <AnimatedIcon
-    //         focused={focused}
-    //         size={size}
-    //         FocusedIcon={LikeIconFocused}
-    //         UnfocusedIcon={LikeIconUnfocused}
-    //       />
-    //     ),
-    //   },
-    //   screen: Likes,
-    // },
-
-    // Profile: {
-    //   options: {
-    //     tabBarIcon: ({ color, size, focused }) => (
-    //       <AnimatedIcon
-    //         focused={focused}
-    //         size={size}
-    //         FocusedIcon={ProfileIconFocused}
-    //         UnfocusedIcon={ProfileIconUnfocused}
-    //       />
-    //     ),
-    //   },
-    //   screen: Profile,
-    // },
-  },
-});
-const RootStack = createNativeStackNavigator({
-  screenOptions: {
-    headerShown: false,
-    contentStyle: {
-      backgroundColor: "black",
-    },
-  },
-
-  screens: {
-    SignIn: {
-      if: useIsNotSignedIn,
-      screen: SignIn,
-      options: {
-        animation: "simple_push",
-      },
-    },
-    Tabs: {
-      if: useIsSignedIn,
-      screen: MyTabs,
-      options: {
-        animation: "simple_push",
-      },
-    },
-
-    EmojiList: {
-      screen: EmojiList,
-      options: {
-        presentation: "modal",
-      },
-    },
-    CreateWallet: {
-      screen: CreateWallet,
-      options: {
-        presentation: "formSheet",
-      },
-    },
-    ViewWallet: {
-      screen: ViewWallet,
-      options: {
-        presentation: "formSheet",
-        headerShown: false,
-        sheetAllowedDetents: [0.9],
-        sheetCornerRadius: 20,
-        sheetExpandsWhenScrolledToEdge: true,
-        sheetElevation: 0,
-        contentStyle: {
-          backgroundColor: "black",
-        },
-      },
-    },
-  },
-});
 
 const Navigation = createStaticNavigation(RootStack);
 export default function Main() {
@@ -325,7 +110,14 @@ export default function Main() {
         // },
 
         {
-          scale: interpolate(
+          scaleX: interpolate(
+            animatedValue.value,
+            [height / 1.5, top],
+            [0.974, scaleValue]
+          ),
+        },
+        {
+          scaleY: interpolate(
             animatedValue.value,
             [height / 1.5, top],
             [0.974, scaleValue]
@@ -370,46 +162,9 @@ export default function Main() {
             animStyle,
           ]}
         >
-          <View
-            style={{
-              position: "absolute",
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              zIndex: 0,
-            }}
-          >
-            {/* <Canvas style={{ flex: 1 }}>
-            <Group dither>
-              <RadialGradient
-                c={vec(width / 3, height)}
-                r={900}
-                colors={["#00000094", "#01272AFF"]}
-              />
-              <Rect x={0} y={0} width={width} height={height + 40} />
-              <Fill color="#00000027" />
-            </Group>
-          </Canvas> */}
-            <LinearGradient
-              colors={
-                Mode === "dark"
-                  ? ["#002327FF", "#000000FF"]
-                  : ["#E6FCFEFF", "#FFFFFFFF"]
-              }
-              style={{
-                position: "absolute",
-                top: 0,
-                left: 0,
-                right: 0,
-                height: height + 40,
-                zIndex: 0,
-              }}
-            />
-          </View>
-      
-            <Navigation />
-        
+         
+
+          <Navigation />
         </Animated.View>
       </BottomSheetModalProvider>
     </>

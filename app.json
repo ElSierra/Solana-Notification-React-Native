@@ -45,9 +45,9 @@
       ],
       "react-native-edge-to-edge"
     ],
-    // "experiments": {
-    //   "reactCompiler": true
-    // },
+    "experiments": {
+      "reactCompiler": true
+    },
     "extra": {
       "eas": {
         "projectId": "fd178647-6835-424b-8bc8-44fa20e60003"

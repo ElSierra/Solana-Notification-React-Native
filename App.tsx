@@ -81,32 +81,34 @@ export default function App() {
   };
 
   return (
-    <GestureHandlerRootView
-      style={{ flex: 1, backgroundColor: "black" }}
-      onLayout={onLayoutRootView}
-    >
-      <SafeAreaProvider>
-        <StatusBar
-          animated={true}
-          style={"dark"}
-          backgroundColor="transparent"
-        />
+    <>
+      <GestureHandlerRootView
+        style={{ flex: 1, backgroundColor: "black" }}
+        onLayout={onLayoutRootView}
+      >
+        <SafeAreaProvider>
+          <StatusBar
+            animated={true}
+            style={"dark"}
+            backgroundColor="transparent"
+          />
 
-        {!animationFinished && (
-          <View
-            style={{
-              position: "absolute",
-              zIndex: 999,
-              height: windowHeight + 40,
-              width: windowWith,
-            }}
-          >
-            <SplashScreenView finishAnimation={onAnimationFinish} />
-          </View>
-        )}
+          {!animationFinished && (
+            <View
+              style={{
+                position: "absolute",
+                zIndex: 999,
+                height: windowHeight + 40,
+                width: windowWith,
+              }}
+            >
+              <SplashScreenView finishAnimation={onAnimationFinish} />
+            </View>
+          )}
 
-        <Main />
-      </SafeAreaProvider>
-    </GestureHandlerRootView>
+          <Main />
+        </SafeAreaProvider>
+      </GestureHandlerRootView>
+    </>
   );
 }

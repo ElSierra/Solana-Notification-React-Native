@@ -17,18 +17,7 @@ import { useIsDarkMode } from "../hooks/getMode";
 
 export default function SignIn() {
   const { width, height } = useWindowDimensions();
-  const [shouldRender, setShouldRender] = useState(false);
-  useFocusEffect(
-    React.useCallback(() => {
-      setShouldRender(true);
-      // Do something when the screen is focused
-      return () => {
-        setShouldRender(false);
-        // Do something when the screen is unfocused
-        // Useful for cleanup functions
-      };
-    }, [])
-  );
+
   const animationFinished = useAnimationFinished(
     (state) => state.animationFinished
   );

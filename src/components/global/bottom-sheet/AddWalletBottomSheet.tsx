@@ -3,7 +3,7 @@ import {
   BottomSheetModal,
   BottomSheetView,
 } from "@gorhom/bottom-sheet";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { memo, useCallback, useEffect, useMemo, useState } from "react";
 import {
   Alert,
   BackHandler,
@@ -13,12 +13,19 @@ import {
   useWindowDimensions,
 } from "react-native";
 import CustomBackground from "./CustomBg";
-import { Easing, SharedValue, useSharedValue } from "react-native-reanimated";
+import Animated, {
+  Easing,
+  interpolate,
+  SharedValue,
+  useAnimatedReaction,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from "react-native-reanimated";
 import { StyleSheet } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useAddWalletBottomSheet } from "../../../store/ui";
 import CreateWallet from "../createWallet/CreateWallet";
-import * as Crypto from "expo-crypto";
 
 type CustomBottomSheetProps = {
   bottomSheetModalRef: React.RefObject<BottomSheetModal>;
@@ -26,20 +33,23 @@ type CustomBottomSheetProps = {
 
   // add your custom props here
 };
-export const AddWalletBottomSheet: React.FC<CustomBottomSheetProps> = ({
+const AddWalletBottomSheet: React.FC<CustomBottomSheetProps> = ({
   bottomSheetModalRef,
   animatedPosition,
 }) => {
+  "use no memo";
   const { height } = useWindowDimensions();
   const { top } = useSafeAreaInsets();
   const [keyboardOpen, setKeyboardOpen] = useState(false);
   const [enableDismissOnClose, setEnableDismissOnClose] = useState(true);
   const percentage = Platform.OS === "ios" ? "90.5" : "94";
   console.log("🚀 ~ file: bottomSheet.tsx:27 ~ percentage:", percentage);
-
+  const closhingSheet = useSharedValue(true);
   console.log("🚀 ~ file: bottomSheet.tsx:26 ~ top:", top, height);
   const toggleSheetState = useAddWalletBottomSheet((state) => state.toggle);
   const snapPoints = useMemo(() => [`${percentage}%`], []);
+  const opacity = useSharedValue(1);
+  const animatedIndex = useSharedValue(0);
   const renderBackdrop = useCallback(
     (props: any) => (
       <>
@@ -47,6 +57,9 @@ export const AddWalletBottomSheet: React.FC<CustomBottomSheetProps> = ({
           {...props}
           opacity={0.4}
           pressBehavior={"close"}
+          onPress={() => {
+            console.log("backdrop pressed");
+          }}
           disappearsOnIndex={-1}
           appearsOnIndex={2}
         />
@@ -79,6 +92,13 @@ export const AddWalletBottomSheet: React.FC<CustomBottomSheetProps> = ({
     }
   }, []);
 
+  const styleView = useAnimatedStyle(() => {
+    return {
+      opacity: interpolate(animatedIndex.value, [-0.9, 0], [0, 1]),
+    };
+  });
+  
+
   return (
     <BottomSheetModal
       animationConfigs={{
@@ -100,12 +120,32 @@ export const AddWalletBottomSheet: React.FC<CustomBottomSheetProps> = ({
       backgroundComponent={CustomBackground}
       handleIndicatorStyle={{ display: "none" }}
       animatedPosition={animatedPosition}
+      animatedIndex={animatedIndex}
       snapPoints={snapPoints}
+      onAnimate={(from, to) => {
+        console.log("from", from);
+        console.log("to", to);
+        if (to ===1 ){
+          console.log("tosasa", to);
+        }
+
+      }}
+      
       onChange={handleSheetChanges}
       backdropComponent={renderBackdrop}
     >
       <BottomSheetView style={styles.contentContainer}>
-        <CreateWallet />
+        <Animated.View
+          style={[
+            {
+              height: "100%",
+              width: "100%",
+            },
+            styleView,
+          ]}
+        >
+          <CreateWallet />
+        </Animated.View>
       </BottomSheetView>
     </BottomSheetModal>
   );
@@ -126,3 +166,5 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
 });
+
+export default memo(AddWalletBottomSheet);
