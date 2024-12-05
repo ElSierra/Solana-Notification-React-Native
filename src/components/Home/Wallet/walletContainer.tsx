@@ -141,7 +141,7 @@ const WalletContainer: React.FC<WalletContainerProps> = ({
         <Animated.View>
           <View
             style={{
-              backgroundColor: isDarkMode ? "#262626FF" : "#D6EDEFFF",
+              backgroundColor: isDarkMode ? "#262626FF" : "#D2D2D2FF",
               padding: 10,
               borderRadius: 20,
               width: "100%",
@@ -159,7 +159,7 @@ const WalletContainer: React.FC<WalletContainerProps> = ({
               <View
                 style={{
                   width: 60,
-                  backgroundColor: isDarkMode ? "#00000074" : "#BFBFBF1A",
+                  backgroundColor: isDarkMode ? "#00000074" : "#FFFFFFB8",
                   borderRadius: 999,
                   height: 60,
                   justifyContent: "center",
@@ -177,25 +177,6 @@ const WalletContainer: React.FC<WalletContainerProps> = ({
                 >
                   {getEmojiFromId(emoji)}
                 </Text>
-                <View
-                  style={{
-                    padding: 2,
-                    backgroundColor: isDarkMode ? "#024D49FF" : "#04B675FF",
-                    borderRadius: 10,
-                  }}
-                >
-                  <Text
-                    numberOfLines={1}
-                    ellipsizeMode="tail"
-                    style={{
-                      fontFamily: "Satoshi-Regular",
-                      color: textColor,
-                      fontSize: 10,
-                    }}
-                  >
-                    {walletName}
-                  </Text>
-                </View>
               </View>
               <View
                 style={{
@@ -207,6 +188,25 @@ const WalletContainer: React.FC<WalletContainerProps> = ({
               >
                 <View
                   style={{
+                    padding: 2,
+                    backgroundColor: isDarkMode ? "#024D49FF" : "#04B675FF",
+                    borderRadius: 10,
+                    alignSelf: "flex-start",
+                  }}
+                >
+                  <Text
+                    ellipsizeMode="tail"
+                    style={{
+                      fontFamily: "Satoshi-Regular",
+                      color: textColor,
+                      fontSize: 10,
+                    }}
+                  >
+                   Wallet: {walletName}
+                  </Text>
+                </View>
+                <View
+                  style={{
                     flexDirection: "row",
                     width: "99%",
                     justifyContent: "space-between",
@@ -214,7 +214,7 @@ const WalletContainer: React.FC<WalletContainerProps> = ({
                 >
                   <Text
                     style={{
-                      color: "white",
+                      color:textColor ,
                       fontFamily: "Satoshi-Black",
                       fontSize: 18,
                     }}

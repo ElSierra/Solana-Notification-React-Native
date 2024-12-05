@@ -16,7 +16,7 @@ type props = {
 
 export const LoadingWalletContainer: FC<props> = ({ quantity }) => {
   const isDarkMode = useIsDarkMode();
-  const backgroundColor = isDarkMode ? "#262626FF" : "#D6EDEFFF";
+  const backgroundColor =  isDarkMode ? "#262626FF" : "#D2D2D2FF"
   const bgColorInner = isDarkMode ? "#00000074" : "#BFBFBF1A";
   const textColor = isDarkMode ? "#B3B3B35B" : "#E9F7EDFF";
 
@@ -42,7 +42,9 @@ export const LoadingWalletContainer: FC<props> = ({ quantity }) => {
   );
 
   return (
-    <Animated.View style={[{ paddingHorizontal: 10 }, viewStyle]}>
+    <Animated.View
+      style={[{ paddingHorizontal: 10, paddingTop: 20 }, viewStyle]}
+    >
       {Array.from({ length: quantity }).map((_, idx) => (
         <View
           key={idx}

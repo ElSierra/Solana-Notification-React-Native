@@ -77,9 +77,11 @@ export const DrawerNavigation = () => {
         sceneStyle: {
           backgroundColor: "transparent",
         },
+        overlayColor: "transparent",
         drawerStyle: {
           backgroundColor: "transparent",
           width: "50%",
+          
         },
       }}
       drawerContent={(props) => <CustomDrawer />}

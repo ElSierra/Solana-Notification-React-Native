@@ -55,6 +55,7 @@ export const useTokenStore = create<TokenState>((set) => ({
     try {
       const token = await SecureStore.getItemAsync("token");
       if (token) {
+        console.log("🚀 ~ file: auth.tsx ~ line 33 ~ token", token);
         set({ token, isTokenReady: true });
       } else {
         set({ isTokenReady: true }); // Even if no token is found, mark it ready

@@ -16,7 +16,7 @@ import { safeAsync } from "../../util/safeAsync";
 import { FC, useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { useAuth } from "../../store/auth";
+import { useAuth, useTokenStore } from "../../store/auth";
 import { useRefreshOnFocus } from "../../hooks/useRefreshOnFocus";
 import { save } from "../../util/secureStore";
 
@@ -24,7 +24,10 @@ type SignInWithGoogleProps = {
   translateY: SharedValue<number>;
   opacity: SharedValue<number>;
 };
-export const SignWithGoogleAsync: FC<SignInWithGoogleProps> = ({translateY,opacity}) => {
+export const SignWithGoogleAsync: FC<SignInWithGoogleProps> = ({
+  translateY,
+  opacity,
+}) => {
   const scale = useSharedValue(1);
   const isDarkMode = useIsDarkMode();
   const setAuth = useAuth((state) => state.setAuth);
@@ -32,6 +35,7 @@ export const SignWithGoogleAsync: FC<SignInWithGoogleProps> = ({translateY,opaci
   const bg = !isDarkMode ? "black" : "white";
   const [isLoading, setIsLoading] = useState(false);
   const [idToken, setIdToken] = useState<string | null>(null);
+  const { setToken, isTokenReady } = useTokenStore();
 
   //useRefetchonFocus
 
@@ -58,6 +62,7 @@ export const SignWithGoogleAsync: FC<SignInWithGoogleProps> = ({translateY,opaci
         id: data.id,
         picture: data.picture,
       });
+      setToken();
       save("token", data.token);
     }
   }, [data]);
@@ -77,7 +82,11 @@ export const SignWithGoogleAsync: FC<SignInWithGoogleProps> = ({translateY,opaci
   };
   const style = useAnimatedStyle(() => {
     return {
-      transform: [{ scaleX: scale.value }, { scaleY: scale.value },{translateY: translateY.value}],
+      transform: [
+        { scaleX: scale.value },
+        { scaleY: scale.value },
+        { translateY: translateY.value },
+      ],
       opacity: opacity.value,
     };
   });

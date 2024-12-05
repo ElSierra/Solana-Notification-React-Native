@@ -48,16 +48,17 @@ export default function Home() {
 
   const walletState = useWalletStore((state) => state);
   const addWalletList = useWalletStore((state) => state.addWalletList);
-  const isTokenReady = useTokenStore((state) => state.isTokenReady);
+
 
   const { isPending, error, data, isFetching, refetch } = useQuery({
+
+
     queryKey: ["wallets"],
     queryFn: () => apiClient.get("/wallets").then((res) => res.data.data),
-    enabled: isTokenReady,
   });
 
   console.log("👀", data);
-
+  console.log("🚀 ~ file: Home.tsx:54 ~ Home ~ error:", error)
   useEffect(() => {
     addWalletList({
       walletData: data?.wallets,
@@ -110,7 +111,7 @@ export default function Home() {
         <Text
           style={{ fontFamily: "Satoshi-Bold", color: textColor, fontSize: 14 }}
         >
-          Total Sol
+        Prev: {walletState?.prevBalance?.toFixed(2) || "0.00"} SOL
         </Text>
         <Text
           style={{
@@ -131,9 +132,11 @@ export default function Home() {
           {walletState?.currentBalanceUSD?.toFixed(2) || "0.00"} USD
         </Text>
       </Animated.View>
-      {/* <LoadingWalletContainer quantity={8}/> */}
-
-      <MemoizedList />
+      {isFetching ? (
+        <LoadingWalletContainer quantity={8} />
+      ) : (
+        <MemoizedList refetch={refetch} isFetching={isFetching} />
+      )}
     </View>
   );
 }

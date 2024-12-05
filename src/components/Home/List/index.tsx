@@ -36,7 +36,10 @@ import axios from "axios";
 import apiClient from "../../../util/axiosInstance";
 import { useTokenStore } from "../../../store/auth";
 
-type ListProps = {};
+type ListProps = {
+  refetch: () => void;
+  isFetching: boolean;
+};
 const renderItem = ({
   item,
 }: {
@@ -52,17 +55,11 @@ const renderItem = ({
   return <WalletContainer {...item} />;
 };
 
-export const List: React.FC<ListProps> = () => {
+export const List: React.FC<ListProps> = ({ refetch, isFetching }) => {
   const deleteAllWallets = useWalletStore((state) => state.deleteAllWallets);
   const walletList = useWalletStore((state) => state.walletData);
 
   const isTokenReady = useTokenStore((state) => state.isTokenReady);
-
-  const { isPending, error, data, isFetching, refetch } = useQuery({
-    queryKey: ["wallets"],
-    queryFn: () => apiClient.get("/wallets").then((res) => res.data.data),
-    enabled: isTokenReady,
-  });
 
   // useAnimatedReaction(
   //   () =>scrollingUp.value,
@@ -111,6 +108,7 @@ export const List: React.FC<ListProps> = () => {
       style={{
         flex: 1,
       }}
+      
     >
       <Animated.FlatList
         // onLayout={(event) => {
@@ -136,7 +134,12 @@ export const List: React.FC<ListProps> = () => {
         keyExtractor={(item) => item.id}
         renderItem={renderItem}
         refreshControl={
-          <RefreshControl refreshing={isFetching} onRefresh={refetch} colors={["white","green","orange"]}  progressBackgroundColor={"black"}/>
+          <RefreshControl
+            refreshing={isFetching}
+            onRefresh={refetch}
+            colors={["white", "green", "orange"]}
+            progressBackgroundColor={"black"}
+          />
         }
       />
     </Animated.View>

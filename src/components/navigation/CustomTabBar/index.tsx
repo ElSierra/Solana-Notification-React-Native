@@ -1,5 +1,5 @@
 import { View, Text, useWindowDimensions, Platform } from "react-native";
-import React, { useLayoutEffect, useRef } from "react";
+import React, { useLayoutEffect, useMemo, useRef } from "react";
 import Animated, {
   FadeIn,
   FadeInUp,
@@ -30,6 +30,7 @@ import { useHideTabBar, useMode } from "../../../store/ui";
 import { LinearGradient } from "expo-linear-gradient";
 import { useIsDarkMode } from "../../../hooks/getMode";
 import switchTheme from "react-native-theme-switch-animation";
+import { useWalletStore } from "../../../store/wallet";
 
 export default function CustomTabBar({
   state,
@@ -103,9 +104,24 @@ export default function CustomTabBar({
     }
   );
 
-
   const isDarkMode = useIsDarkMode();
   const toggleMode = useMode((state) => state.toggleMode);
+
+  const walletAdjustSol = useWalletStore((state) => state.adjustSOL);
+  console.log(
+    "🚀 ~ file: index.tsx:14 ~ LinearBackground ~ walletAdjustSol:",
+    walletAdjustSol
+  );
+
+  const getColorArray = useMemo(() => {
+    if (walletAdjustSol === "up") {
+      return isDarkMode
+        ? ["#00000000", "#002327FF"]
+        : ["#FFFFFF00", "#E6FCFEFF"];
+    }
+    return isDarkMode ? ["#00000000", "#270600FF"] : ["#FFFFFF00", "#FEE6E6FF"];
+  }, [walletAdjustSol, isDarkMode]);
+
   return (
     <View
       style={[
@@ -129,11 +145,7 @@ export default function CustomTabBar({
       ]}
     >
       <LinearGradient
-        colors={
-          isDarkMode
-            ? ["rgba(255,255,255,0)", "#00311F4E"]
-            : ["rgba(255,255,255,0)", "#04B6753F"]
-        }
+        colors={getColorArray as any}
         style={{
           position: "absolute",
           bottom: 0,

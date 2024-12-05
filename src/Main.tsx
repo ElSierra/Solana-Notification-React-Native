@@ -46,6 +46,7 @@ import { LinearGradient } from "expo-linear-gradient";
 
 import { RootStack } from "./navigation/RootStackNavigtaion";
 import { useTokenStore } from "./store/auth";
+import { getValueFor } from "./util/secureStore";
 type RootStackParamList = StaticParamList<typeof RootStack>;
 
 declare global {
@@ -143,13 +144,17 @@ export default function Main() {
   );
 
   const Mode = useMode((state) => state.mode);
-  const { setToken, isTokenReady } = useTokenStore();
-
+  const hydrateToken = async () => {
+    const token = await getValueFor("token");
+    if (token) {
+      useTokenStore.setState({ token });
+    }
+  };
+  
   useEffect(() => {
-    setToken(); // Initialize token on app load
+    hydrateToken();
   }, []);
 
-  console.log(isTokenReady, "isTokenReady");
   return (
     <>
       <StatusBar

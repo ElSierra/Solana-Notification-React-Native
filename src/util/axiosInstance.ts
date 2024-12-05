@@ -9,12 +9,18 @@ const apiClient = axios.create({
   },
 });
 
-apiClient.interceptors.request.use((config) => {
-  const token = useTokenStore.getState().token;
-  if (token) {
-    config.headers.token = token;
+apiClient.interceptors.request.use(
+  async (config) => {
+    const token =
+      useTokenStore.getState().token || (await getValueFor("token")); // Fallback to SecureStore
+    if (token) {
+      config.headers.token = token;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
   }
-  return config;
-});
+);
 
 export default apiClient;

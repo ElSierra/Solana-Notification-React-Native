@@ -1,5 +1,5 @@
 import { View, Text, Pressable, Platform } from "react-native";
-import React from "react";
+import React, { useMemo } from "react";
 import LinearBackground from "../../global/LinearBackground";
 import { LinearGradient } from "expo-linear-gradient";
 import { useIsDarkMode } from "../../../hooks/getMode";
@@ -11,7 +11,7 @@ import switchTheme from "react-native-theme-switch-animation";
 import { LogoutIcon } from "../../global/icons";
 import LogoutIconComponent from "./LogoutIcon";
 import { useNavigation } from "@react-navigation/native";
-import { useAuth } from "../../../store/auth";
+import { useAuth, useTokenStore } from "../../../store/auth";
 import { useWalletStore } from "../../../store/wallet";
 import { queryClient } from "../../../util/queryClient";
 import { deleteValueFor } from "../../../util/secureStore";
@@ -23,19 +23,31 @@ const CustomDrawer = () => {
   const color = !isDarkMode ? "black" : "white";
   const borderColor = isDarkMode ? "white" : "transparent";
   const setAuth = useAuth((state) => state.setAuth);
+  const clearToken = useTokenStore((state) => state.clearToken);
   const addDummyData = useWalletStore((state) => state.addDummyData);
-  
+
+  const walletAdjustSol = useWalletStore((state) => state.adjustSOL);
+  console.log(
+    "🚀 ~ file: index.tsx:14 ~ LinearBackground ~ walletAdjustSol:",
+    walletAdjustSol
+  );
+
+  const getColorArray = useMemo(() => {
+    if (walletAdjustSol === "up") {
+      return isDarkMode
+        ? ["#002327FF", "#00000000"]
+        : ["#E6FCFEFF", "#FFFFFF00"];
+    }
+    return isDarkMode ? ["#270600FF", "#00000000"] : ["#FEE6E6FF", "#FFFFFF00"];
+  }, [walletAdjustSol, isDarkMode]);
+
   return (
     <View
       style={{ flex: 1, backgroundColor: "", justifyContent: "space-between" }}
     >
       {/* <LinearBackground /> */}
       <LinearGradient
-        colors={
-          isDarkMode
-            ? ["#002327FF", "rgba(255,255,255,0)"]
-            : ["#04B6753F", "rgba(255,255,255,0)"]
-        }
+        colors={getColorArray as any}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 0 }}
         style={{
@@ -104,8 +116,9 @@ const CustomDrawer = () => {
         <Pressable
           onPress={() => {
             setAuth(null);
+            clearToken();
             queryClient.removeQueries();
-            deleteValueFor("token")
+            deleteValueFor("token");
           }}
           onLongPress={() => {
             addDummyData();
