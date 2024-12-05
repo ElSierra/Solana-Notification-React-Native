@@ -31,14 +31,16 @@ import RightAction from "./RightAction";
 type WalletContainerProps = {
   walletName: string;
   walletAddress: string;
-  balance?: number;
+  walletBalance?: number;
+  walletBalanceUSD?: number;
   emoji: number;
   id: string;
 };
 
 const WalletContainer: React.FC<WalletContainerProps> = ({
   walletAddress,
-  balance,
+  walletBalance,
+  walletBalanceUSD,
   emoji,
   id,
   walletName,
@@ -217,7 +219,7 @@ const WalletContainer: React.FC<WalletContainerProps> = ({
                       fontSize: 18,
                     }}
                   >
-                    {balance ? balance + " SOL" : "--"}
+                    {walletBalance ? walletBalance.toFixed(2) + " SOL" : "--"}
                   </Text>
                   <Text
                     style={{
@@ -225,7 +227,9 @@ const WalletContainer: React.FC<WalletContainerProps> = ({
                       color: textColor,
                     }}
                   >
-                    $12000
+                    {walletBalanceUSD
+                      ? "$" + walletBalanceUSD.toFixed(2)
+                      : "--"}
                   </Text>
                 </View>
                 <Text

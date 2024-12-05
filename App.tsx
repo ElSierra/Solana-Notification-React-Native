@@ -1,5 +1,11 @@
-import { useCallback, useLayoutEffect, useState } from "react";
-import { useWindowDimensions, View } from "react-native";
+import { useCallback, useEffect, useLayoutEffect, useState } from "react";
+import {
+  AppState,
+  AppStateStatus,
+  Platform,
+  useWindowDimensions,
+  View,
+} from "react-native";
 
 import * as SplashScreen from "expo-splash-screen";
 
@@ -33,6 +39,12 @@ import {
   ReanimatedLogLevel,
 } from "react-native-reanimated";
 import { ReactScan } from "react-scan/native";
+import {
+  focusManager,
+  QueryClient,
+  QueryClientProvider,
+} from "@tanstack/react-query";
+import { queryClient } from "./src/util/queryClient";
 
 enableFreeze(true);
 configureReanimatedLogger({
@@ -51,6 +63,20 @@ export default function App() {
     // "satoshi-bold": require("./assets/fonts/Satoshi-Bold.otf"),
     // "satoshi-black": require("./assets/fonts/Satoshi-Black.otf"),
   });
+
+  function onAppStateChange(status: AppStateStatus) {
+    if (Platform.OS !== "web") {
+      focusManager.setFocused(status === "active");
+    }
+  }
+
+  useEffect(() => {
+    const subscription = AppState.addEventListener("change", onAppStateChange);
+
+    return () => subscription.remove();
+  }, []);
+
+
   const [appIsReady, setAppIsReady] = useState(false);
   const { width: windowWith, height: windowHeight } = useWindowDimensions();
 
@@ -105,8 +131,9 @@ export default function App() {
               <SplashScreenView finishAnimation={onAnimationFinish} />
             </View>
           )}
-
-          <Main />
+          <QueryClientProvider client={queryClient}>
+            <Main />
+          </QueryClientProvider>
         </SafeAreaProvider>
       </GestureHandlerRootView>
     </>

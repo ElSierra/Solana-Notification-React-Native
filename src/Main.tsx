@@ -40,11 +40,12 @@ import {
   useEmojiBottomSheet,
   useMode,
 } from "./store/ui";
-import AddWalletBottomSheet  from "./components/global/bottom-sheet/AddWalletBottomSheet";
+import AddWalletBottomSheet from "./components/global/bottom-sheet/AddWalletBottomSheet";
 
 import { LinearGradient } from "expo-linear-gradient";
 
 import { RootStack } from "./navigation/RootStackNavigtaion";
+import { useTokenStore } from "./store/auth";
 type RootStackParamList = StaticParamList<typeof RootStack>;
 
 declare global {
@@ -142,7 +143,13 @@ export default function Main() {
   );
 
   const Mode = useMode((state) => state.mode);
+  const { setToken, isTokenReady } = useTokenStore();
 
+  useEffect(() => {
+    setToken(); // Initialize token on app load
+  }, []);
+
+  console.log(isTokenReady, "isTokenReady");
   return (
     <>
       <StatusBar
@@ -162,8 +169,6 @@ export default function Main() {
             animStyle,
           ]}
         >
-         
-
           <Navigation />
         </Animated.View>
       </BottomSheetModalProvider>

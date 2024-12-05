@@ -3,8 +3,11 @@ import React from "react";
 import { ProfileIcon } from "../../global/icons";
 import { DrawerItem } from "@react-navigation/drawer";
 import { Image, ImageBackground } from "expo-image";
+import { useAuth } from "../../../store/auth";
 
 export default function Header() {
+  const type = useAuth((state) => state.type);
+  const authData = useAuth((state) => state.user);
   return (
     <View
       style={{
@@ -18,13 +21,21 @@ export default function Header() {
       }}
     >
       <ImageBackground
-       source={require("../../../../assets/logo.png")}
-       blurRadius={200}
-        style={{ padding: 20, overflow:"hidden", borderRadius: 9999 }}
+        source={
+          type === "guest"
+            ? require("../../../../assets/logo.png")
+            : authData?.picture
+        }
+        blurRadius={200}
+        style={{ padding: 20, overflow: "hidden", borderRadius: 9999 }}
       >
         <Image
-          source={require("../../../../assets/logo.png")}
-          style={{ width: 80, height: 80 }}
+          source={
+            type === "guest"
+              ? require("../../../../assets/logo.png")
+              : authData?.picture
+          }
+          style={{ width: 80, height: 80, borderRadius: 9999 }}
         />
       </ImageBackground>
     </View>

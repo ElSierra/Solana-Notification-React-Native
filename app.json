@@ -14,13 +14,17 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "me.isaacojo.solping"
+      "bundleIdentifier": "me.isaacojo.solping",
+      "config": {
+        "usesNonExemptEncryption": false
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#000000"
       },
+      "googleServicesFile": "./google-services.json",
       "package": "me.isaacojo.solping"
     },
     "web": {
@@ -43,7 +47,16 @@
           ]
         }
       ],
-      "react-native-edge-to-edge"
+      [
+        "expo-secure-store",
+        {
+          "configureAndroidBackup": true,
+          "faceIDPermission": "Allow $(PRODUCT_NAME) to access your Face ID biometric data."
+        }
+      ],
+      "react-native-edge-to-edge",
+      "@react-native-google-signin/google-signin",
+      "expo-secure-store"
     ],
     "experiments": {
       "reactCompiler": true

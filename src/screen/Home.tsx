@@ -22,9 +22,13 @@ import { useEmojiBottomSheet, useMode } from "../store/ui";
 import { useWalletStore } from "../store/wallet";
 import switchTheme from "react-native-theme-switch-animation";
 import { useIsDarkMode } from "../hooks/getMode";
-import { useAuth } from "../store/auth";
+import { useAuth, useTokenStore } from "../store/auth";
 import { LinearGradient } from "expo-linear-gradient";
 import LinearBackground from "../components/global/LinearBackground";
+import { getValueFor } from "../util/secureStore";
+import { LoadingWalletContainer } from "../components/Home/Wallet/LoadingWalletContainer";
+import { useQuery } from "@tanstack/react-query";
+import apiClient from "../util/axiosInstance";
 
 export default function Home() {
   const bottomTabHeight = useBottomTabBarHeight();
@@ -35,23 +39,6 @@ export default function Home() {
     bottomTabHeight
   );
   const { height } = useWindowDimensions();
-  const offsetY = useSharedValue(0);
-  const offsetHeight = useSharedValue(0);
-  const addDummyData = useWalletStore((state) => state.addDummyData);
-  const solAnimStyle = useAnimatedStyle(() => {
-    return {
-      transform: [
-        {
-          translateY: interpolate(
-            offsetY.value,
-            [0, offsetHeight.value],
-            [0, -[offsetHeight.value / 18]],
-            "clamp"
-          ),
-        },
-      ],
-    };
-  });
 
   useEffect(() => {
     if (emojiSheetState) {
@@ -59,9 +46,28 @@ export default function Home() {
     }
   }, [emojiSheetState]);
 
-  useEffect(() => {}, []);
-  const mode = useMode();
-  const setType = useAuth((state) => state.setType);
+  const walletState = useWalletStore((state) => state);
+  const addWalletList = useWalletStore((state) => state.addWalletList);
+  const isTokenReady = useTokenStore((state) => state.isTokenReady);
+
+  const { isPending, error, data, isFetching, refetch } = useQuery({
+    queryKey: ["wallets"],
+    queryFn: () => apiClient.get("/wallets").then((res) => res.data.data),
+    enabled: isTokenReady,
+  });
+
+  console.log("👀", data);
+
+  useEffect(() => {
+    addWalletList({
+      walletData: data?.wallets,
+      adjustSOL: data?.adjustSOL,
+      currentBalance: data?.currentBalance,
+      currentBalanceUSD: data?.currentBalanceUSD,
+      prevBalance: data?.prevBalance,
+      prevBalanceUSD: data?.prevBalanceUSD,
+    });
+  }, [data]);
   const isDarkMode = useIsDarkMode();
   const textColor = isDarkMode ? "white" : "black";
   return (
@@ -113,7 +119,7 @@ export default function Home() {
             fontSize: 30,
           }}
         >
-          0.0000 SOL
+          {walletState?.currentBalance?.toFixed(2) || "0.00"} SOL
         </Text>
         <Text
           style={{
@@ -122,9 +128,10 @@ export default function Home() {
             fontSize: 18,
           }}
         >
-          $100.00 USD
+          {walletState?.currentBalanceUSD?.toFixed(2) || "0.00"} USD
         </Text>
       </Animated.View>
+      {/* <LoadingWalletContainer quantity={8}/> */}
 
       <MemoizedList />
     </View>

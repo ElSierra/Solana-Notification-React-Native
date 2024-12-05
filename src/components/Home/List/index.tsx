@@ -6,6 +6,7 @@ import {
   StyleSheet,
   Share,
   useWindowDimensions,
+  RefreshControl,
 } from "react-native";
 import AddWallet from "../Wallet/AddWallet";
 import WalletContainer from "../Wallet/walletContainer";
@@ -30,6 +31,10 @@ import { emojis } from "../../../data/emoji";
 import { useIsDarkMode } from "../../../hooks/getMode";
 import { useNavigation } from "@react-navigation/native";
 import React from "react";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
+import apiClient from "../../../util/axiosInstance";
+import { useTokenStore } from "../../../store/auth";
 
 type ListProps = {};
 const renderItem = ({
@@ -40,7 +45,8 @@ const renderItem = ({
     walletName: string;
     walletAddress: string;
     emoji: number;
-    balance?: number;
+    walletBalance?: number;
+    walletBalanceUSD?: number;
   };
 }) => {
   return <WalletContainer {...item} />;
@@ -49,10 +55,15 @@ const renderItem = ({
 export const List: React.FC<ListProps> = () => {
   const deleteAllWallets = useWalletStore((state) => state.deleteAllWallets);
   const walletList = useWalletStore((state) => state.walletData);
-  useEffect(() => {
 
-    console.log("rendering list");
-  }, []);
+  const isTokenReady = useTokenStore((state) => state.isTokenReady);
+
+  const { isPending, error, data, isFetching, refetch } = useQuery({
+    queryKey: ["wallets"],
+    queryFn: () => apiClient.get("/wallets").then((res) => res.data.data),
+    enabled: isTokenReady,
+  });
+
   // useAnimatedReaction(
   //   () =>scrollingUp.value,
   //   (value) => {
@@ -124,6 +135,9 @@ export const List: React.FC<ListProps> = () => {
         scrollEventThrottle={16}
         keyExtractor={(item) => item.id}
         renderItem={renderItem}
+        refreshControl={
+          <RefreshControl refreshing={isFetching} onRefresh={refetch} colors={["white","green","orange"]}  progressBackgroundColor={"black"}/>
+        }
       />
     </Animated.View>
   );

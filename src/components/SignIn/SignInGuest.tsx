@@ -3,6 +3,7 @@ import { Text, View } from "react-native";
 import { Theme } from "../../constants/Theme";
 import Animated, {
   runOnJS,
+  SharedValue,
   useAnimatedStyle,
   useSharedValue,
   withSpring,
@@ -10,18 +11,23 @@ import Animated, {
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import { useAuth } from "../../store/auth";
 import { useIsDarkMode } from "../../hooks/getMode";
-import { useState } from "react";
+import { FC, useState } from "react";
 import { Loading } from "../global/Loading";
-export const SignInGuest = () => {
+type translateYBottom = {
+  translateYBottom: SharedValue<number>;
+  opacity : SharedValue<number>;
+}
+export const SignInGuest:FC<translateYBottom> = ({translateYBottom,opacity}) => {
   const scale = useSharedValue(1);
-  const setAuth = useAuth((state) => state.setType);
+  const setAuth = useAuth((state) => state.setAuth);
   const isDarkMode = useIsDarkMode();
   const textColor = isDarkMode ? "white" : "black";
   const bg = !isDarkMode ? "black" : "white";
   const [clicked, setClicked] = useState(false);
   const style = useAnimatedStyle(() => {
     return {
-      transform: [{ scaleX: scale.value }, { scaleY: scale.value }],
+      transform: [{ scaleX: scale.value }, { scaleY: scale.value },{translateY: translateYBottom.value}],
+      opacity: opacity.value,
     };
   });
   const tap = Gesture.Tap()

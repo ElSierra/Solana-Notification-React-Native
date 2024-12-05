@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet } from "react-native";
 import ClippedText from "./ClippedText";
-import { SignWithGoogle } from "./SignInWithGoogle";
+import { SignWithGoogleAsync } from "./SignInWithGoogle";
 import { SignInGuest } from "./SignInGuest";
 import { Image } from "expo-image";
 import Animated, {
@@ -12,9 +12,17 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 import { useIsDarkMode } from "../../hooks/getMode";
+import { useAnimationFinished } from "../../store/ui";
 
 export const SignInComponent = () => {
   const scale = useSharedValue(1);
+  const translateYTop = useSharedValue(50);
+  const opacityTop = useSharedValue(0);
+  const translateYBottom = useSharedValue(-50);
+  const opacityBottom = useSharedValue(0);
+  const animationFinished = useAnimationFinished(
+    (state) => state.animationFinished
+  );
 
   const imgStyle = useAnimatedStyle(() => {
     return {
@@ -33,6 +41,21 @@ export const SignInComponent = () => {
     []
   );
 
+  useAnimatedReaction(
+    () => {
+      return animationFinished;
+    },
+    (value) => {
+
+      if (value) {
+        translateYTop.value = withSpring(0);
+        translateYBottom.value = withSpring(0);
+        opacityTop.value = withSpring(1);
+        opacityBottom.value = withSpring(1);
+      }
+    },
+    [animationFinished]
+  );
   return (
     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
       <View>
@@ -61,7 +84,11 @@ export const SignInComponent = () => {
               marginTop: 1,
             }}
           >
-            <Text style={[styles.text, { color: isDarkMode? "black":"white" }]}>Transactions</Text>
+            <Text
+              style={[styles.text, { color: isDarkMode ? "black" : "white" }]}
+            >
+              Transactions
+            </Text>
           </View>
         </View>
       </View>
@@ -77,8 +104,8 @@ export const SignInComponent = () => {
           justifyContent: "center",
         }}
       >
-        <SignWithGoogle />
-        <SignInGuest />
+        <SignWithGoogleAsync translateY={translateYTop} opacity={opacityTop} />
+        <SignInGuest translateYBottom={translateYBottom} opacity={opacityBottom}/>
       </View>
     </View>
   );

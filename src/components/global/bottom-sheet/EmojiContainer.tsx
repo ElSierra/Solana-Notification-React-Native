@@ -5,7 +5,6 @@ import Animated, {
   useSharedValue,
   withSpring,
 } from "react-native-reanimated";
-
 function EmojiContainer({
   item,
   onPress,
@@ -17,6 +16,7 @@ function EmojiContainer({
     <Pressable
       onPress={() => {
         onPress(item.id);
+        console.log("pressed");
       }}
     >
       <View

@@ -142,6 +142,7 @@ const AddWalletBottomSheet: React.FC<CustomBottomSheetProps> = ({
               width: "100%",
             },
             styleView,
+            
           ]}
         >
           <CreateWallet />

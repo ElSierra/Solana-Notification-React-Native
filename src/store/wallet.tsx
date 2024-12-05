@@ -19,14 +19,21 @@ export const zustandStorage: StateStorage = {
   },
 };
 
+type WalletData = {
+  id: string;
+  walletName: string;
+  walletAddress: string;
+  emoji: number;
+  walletBalance?: number;
+};
 interface WalletState {
-  walletData: {
-    id: string;
-    walletName: string;
-    walletAddress: string;
-    emoji: number;
-    balance?: number;
-  }[];
+  walletData: WalletData[];
+  adjustSOL?: string;
+  adjustUSD?: string;
+  prevBalance?: number;
+  prevBalanceUSD?: number;
+  currentBalance?: number;
+  currentBalanceUSD?: number;
   addDummyData: () => void;
   addWalletData: (newWallet: {
     walletName: string;
@@ -36,6 +43,23 @@ interface WalletState {
   addBalance: (id: string, balance: number) => void;
   removeWalletData: (id: string) => void;
   deleteAllWallets: () => void;
+  addWalletList: ({
+    walletData,
+    adjustSOL,
+    adjustUSD,
+    prevBalance,
+    prevBalanceUSD,
+    currentBalance,
+    currentBalanceUSD,
+  }: {
+    walletData: WalletData[];
+    adjustSOL?: string;
+    adjustUSD?: string;
+    prevBalance?: number;
+    prevBalanceUSD?: number;
+    currentBalance?: number;
+    currentBalanceUSD?: number;
+  }) => void;
 }
 
 export const useWalletStore = create<WalletState>()(
@@ -100,6 +124,18 @@ export const useWalletStore = create<WalletState>()(
             ],
           };
         }),
+      addWalletList: (data) =>
+        set((state) => {
+          return {
+            walletData: data.walletData,
+            adjustSOL: data.adjustSOL,
+            adjustUSD: data.adjustUSD,
+            prevBalance: data.prevBalance,
+            prevBalanceUSD: data.prevBalanceUSD,
+            currentBalance: data.currentBalance,
+            currentBalanceUSD: data.currentBalanceUSD,
+          };
+        }),
       // Remove a wallet by its name
       removeWalletData: (id) =>
         set((state) => ({
@@ -115,7 +151,7 @@ export const useWalletStore = create<WalletState>()(
         set((state) => {
           const wallet = state.walletData.find((wallet) => wallet.id === id);
           if (wallet) {
-            wallet.balance = balance;
+            wallet.walletBalance = balance;
           }
           return {
             walletData: state.walletData,

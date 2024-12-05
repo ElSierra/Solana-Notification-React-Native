@@ -19,7 +19,8 @@ ios
 *.mobileprovision
 *.apk
 *.abb
-
+.env
+google-services.json
 
 # Metro
 .metro-health-check*

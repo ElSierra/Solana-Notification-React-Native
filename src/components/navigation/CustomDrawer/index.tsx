@@ -13,6 +13,8 @@ import LogoutIconComponent from "./LogoutIcon";
 import { useNavigation } from "@react-navigation/native";
 import { useAuth } from "../../../store/auth";
 import { useWalletStore } from "../../../store/wallet";
+import { queryClient } from "../../../util/queryClient";
+import { deleteValueFor } from "../../../util/secureStore";
 
 const CustomDrawer = () => {
   const isDarkMode = useIsDarkMode();
@@ -20,7 +22,7 @@ const CustomDrawer = () => {
   const toggleDarkMode = useMode((state) => state.toggleMode);
   const color = !isDarkMode ? "black" : "white";
   const borderColor = isDarkMode ? "white" : "transparent";
-  const setType = useAuth((state) => state.setType);
+  const setAuth = useAuth((state) => state.setAuth);
   const addDummyData = useWalletStore((state) => state.addDummyData);
   
   return (
@@ -101,7 +103,9 @@ const CustomDrawer = () => {
         </Pressable>
         <Pressable
           onPress={() => {
-            setType(null);
+            setAuth(null);
+            queryClient.removeQueries();
+            deleteValueFor("token")
           }}
           onLongPress={() => {
             addDummyData();
