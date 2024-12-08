@@ -1,4 +1,11 @@
-import { View, Text, TouchableOpacity, Keyboard } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Keyboard,
+  ActivityIndicator,
+  useWindowDimensions,
+} from "react-native";
 import React, { useEffect, useState } from "react";
 import { WalletInput } from "./WalletInput.android";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
@@ -7,17 +14,24 @@ import { toast } from "sonner-native";
 import { isValidSolanaWallet } from "../../../../util/getIsValidSolanaWallet";
 import { set } from "lodash";
 import Animated, {
+  FadeIn,
   runOnJS,
   useAnimatedKeyboard,
   useAnimatedReaction,
   useAnimatedStyle,
   useSharedValue,
+  withDelay,
   withSequence,
   withTiming,
 } from "react-native-reanimated";
 import { useAddWalletBottomSheet } from "../../../../store/ui";
 import { useBottomSheetModal } from "@gorhom/bottom-sheet";
 import { useIsDarkMode } from "../../../../hooks/getMode";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import apiClient from "../../../../util/axiosInstance";
+import { Theme } from "../../../../constants/Theme";
+import { CautionIcon } from "../../icons";
+import { queryClient } from "../../../../util/queryClient";
 
 export default function Form({ emoji }: { emoji: number }) {
   const [form, setForm] = useState({
@@ -28,8 +42,31 @@ export default function Form({ emoji }: { emoji: number }) {
   console.log("🚀 ~ file: index.tsx:22 ~ Form ~ form:", form);
   const { dismiss, dismissAll } = useBottomSheetModal();
   const addToWalletList = useWalletStore((state) => state.addWalletData);
+  const { width: windowWidth } = useWindowDimensions();
+  const addWalletList = useWalletStore((state) => state.addWalletList);
 
-  
+  const { isPending, error, data, mutate } = useMutation({
+    mutationKey: ["wallets"],
+
+    mutationFn: () =>
+      apiClient
+        .put("/add-wallet", {
+          
+          walletName: form.walletName,
+          walletAddress: form.walletAddress,
+          emojiId: form.emoji,
+        })
+        .then((res) => res.data.data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["wallets"],
+      });
+      dismissedState.value = true;
+    },
+    onError: (error: any) => {
+      console.log("🚀 ~ file: index.tsx:47 ~ onError ~ error", error);
+    },
+  });
 
   const [isValidWallet, setIsValidWallet] = useState({
     walletName: false,
@@ -129,14 +166,17 @@ export default function Form({ emoji }: { emoji: number }) {
     }
     if (isValidWallet.walletName && isValidWallet.walletAddress) {
       Keyboard.dismiss();
-      addToWalletList(form);
-      dismissedState.value = true;
+      // addToWalletList(form);
+      mutate();
 
       // toast("Wallet Added");
     }
 
     // addToWalletList(form);
   };
+  // useEffect(() => {
+  //   dismissedState.value = data ? true : false;
+  // }, [data]);
 
   const walletAddressStyle = useAnimatedStyle(() => {
     return {
@@ -151,8 +191,54 @@ export default function Form({ emoji }: { emoji: number }) {
   });
 
   const isDarkMode = useIsDarkMode();
+  const translateErrorX = useSharedValue(-windowWidth);
+
+  const errorStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{ translateX: translateErrorX.value }],
+    };
+  });
+
+  useAnimatedReaction(
+    () => error,
+    (error) => {
+      if (error) {
+        translateErrorX.value = withTiming(0, { duration: 300 }, (finished) => {
+          if (finished) {
+            translateErrorX.value = withDelay(2000, withTiming(-windowWidth));
+          }
+        });
+      }
+    }
+  );
   return (
     <View style={{ padding: 10, gap: 10 }}>
+      <Animated.View
+        style={[
+          {
+            backgroundColor: "#FF6A00FF",
+            paddingHorizontal: 6,
+            paddingVertical: 3,
+            alignSelf: "flex-start",
+            borderRadius: 20,
+            justifyContent: "center",
+            alignItems: "center",
+            flexDirection: "row",
+            gap: 5,
+          },
+          errorStyle,
+        ]}
+      >
+        <CautionIcon size={16} color="white" />
+        <Text
+          style={[
+            { color: "#FFFFFFFF", fontFamily: Theme.fonts.SatoshiRegular },
+            errorStyle,
+          ]}
+        >
+          {error?.response?.data?.message}
+        </Text>
+      </Animated.View>
       <Animated.View style={walletNameStyle}>
         <WalletInput
           placeholder="Wallet Name"
@@ -177,16 +263,20 @@ export default function Form({ emoji }: { emoji: number }) {
           }}
         >
           <View style={{ justifyContent: "center", alignItems: "center" }}>
-            <Text
-              style={{
-                fontFamily: "Satoshi-Medium",
-                textAlign: "center",
-                fontSize: 16,
-                color: isDarkMode ? "black" : "white",
-              }}
-            >
-              Save Wallet
-            </Text>
+            {isPending ? (
+              <ActivityIndicator size={"small"} color={"black"} />
+            ) : (
+              <Text
+                style={{
+                  fontFamily: "Satoshi-Medium",
+                  textAlign: "center",
+                  fontSize: 16,
+                  color: isDarkMode ? "black" : "white",
+                }}
+              >
+                Save Wallet
+              </Text>
+            )}
           </View>
         </View>
       </TouchableOpacity>

@@ -11,7 +11,7 @@ import {
   Fill,
   Group,
 } from "@shopify/react-native-skia";
-
+import notifee from "@notifee/react-native";
 import { List, MemoizedList } from "../components/Home/List";
 import Animated, {
   interpolate,
@@ -29,6 +29,7 @@ import { getValueFor } from "../util/secureStore";
 import { LoadingWalletContainer } from "../components/Home/Wallet/LoadingWalletContainer";
 import { useQuery } from "@tanstack/react-query";
 import apiClient from "../util/axiosInstance";
+import { formatUsd } from "../util/formatUsd";
 
 export default function Home() {
   const bottomTabHeight = useBottomTabBarHeight();
@@ -54,7 +55,7 @@ export default function Home() {
 
 
     queryKey: ["wallets"],
-    queryFn: () => apiClient.get("/wallets").then((res) => res.data.data),
+    queryFn: () => apiClient.get("/wallets?recheck").then((res) => res.data.data),
   });
 
   console.log("👀", data);
@@ -71,8 +72,43 @@ export default function Home() {
   }, [data]);
   const isDarkMode = useIsDarkMode();
   const textColor = isDarkMode ? "white" : "black";
+
+
+  async function onDisplayNotification() {
+    // Request permissions (required for iOS)
+    await notifee.requestPermission()
+
+    // Create a channel (required for Android)
+    const channelId = await notifee.createChannel({
+      id: 'default',
+      name: 'Default Channel',
+    });
+
+    // Display a notification
+    await notifee.displayNotification({
+      title: '<p style="color: #4caf50;"><b>Styled HTMLTitle</span></p></b></p> &#128576;',
+      subtitle: '&#129395;',
+      body:
+        'The <p style="text-decoration: line-through">body can</p> also be <p style="color: #ffffff; background-color: #9c27b0"><i>styled too</i></p> &#127881;!',
+      android: {
+        channelId,
+        color: '#4caf50',
+        actions: [
+          {
+            title: '<b>Dance</b> &#128111;',
+            pressAction: { id: 'dance' },
+          },
+          {
+            title: '<p style="color: #f44336;"><b>Cry</b> &#128557;</p>',
+            pressAction: { id: 'cry' },
+          },
+        ],
+      },
+    });
+  }
   return (
     <View style={{ flex: 1 }}>
+     
       <View
         style={{
           position: "absolute",
@@ -129,9 +165,10 @@ export default function Home() {
             fontSize: 18,
           }}
         >
-          {walletState?.currentBalanceUSD?.toFixed(2) || "0.00"} USD
+          {formatUsd(walletState?.currentBalanceUSD||0)}
         </Text>
       </Animated.View>
+      <Button title="Display Notification" onPress={onDisplayNotification} />
       {isFetching ? (
         <LoadingWalletContainer quantity={8} />
       ) : (

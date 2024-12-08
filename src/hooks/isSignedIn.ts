@@ -1,4 +1,4 @@
-import { useAuth } from "../store/auth";
+import { useAuth, useIsFingerPrintSuccess } from "../store/auth";
 
 export const useIsSignedIn = () => {
   const user = useAuth((state) => state.type);
@@ -22,4 +22,18 @@ export const useIsNotSignedIn = () => {
     return false;
   }
   return true;
+};
+
+export const useCheckFingerPrint = () => {
+  const user = useAuth((state) => state.type);
+  const fingerPrintSuccess = useIsFingerPrintSuccess(
+    (state) => state.isFingerPrintSuccess
+  );
+  if (!user) {
+    return false;
+  }
+  if (user && !fingerPrintSuccess) {
+    return true;
+  }
+  return false;
 };

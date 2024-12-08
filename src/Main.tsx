@@ -27,6 +27,7 @@ import {
   createStaticNavigation,
   StaticParamList,
 } from "@react-navigation/native";
+import * as LocalAuthentication from "expo-local-authentication";
 
 import { StatusBar } from "expo-status-bar";
 
@@ -150,10 +151,19 @@ export default function Main() {
       useTokenStore.setState({ token });
     }
   };
-  
+
   useEffect(() => {
     hydrateToken();
   }, []);
+
+  // LocalAuthentication.authenticateAsync({
+  //   promptMessage: "Authenticate",
+  // }).then((res) => {
+  //   console.log(
+  //     "🚀 ~ file: index.tsx:151 ~ LocalAuthentication.authenticateAsync ~ res",
+  //     res
+  //   );
+  // });
 
   return (
     <>

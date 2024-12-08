@@ -5,6 +5,7 @@ import {
   Pressable,
   StyleSheet,
   useWindowDimensions,
+  Button,
 } from "react-native";
 import ReactNativeHapticFeedback from "react-native-haptic-feedback";
 import { useViewWalletBottomSheet } from "../../../store/ui";
@@ -28,6 +29,10 @@ import { emojis } from "../../../data/emoji";
 import { useWalletStore } from "../../../store/wallet";
 import { useIsDarkMode } from "../../../hooks/getMode";
 import RightAction from "./RightAction";
+import { formatUsd } from "../../../util/formatUsd";
+import { useMutation } from "@tanstack/react-query";
+import apiClient from "../../../util/axiosInstance";
+import { queryClient } from "../../../util/queryClient";
 type WalletContainerProps = {
   walletName: string;
   walletAddress: string;
@@ -73,6 +78,28 @@ const WalletContainer: React.FC<WalletContainerProps> = ({
   //   setResult(result);
   // };
 
+  const { isPending, error, data, mutate } = useMutation({
+    mutationKey: ["wallets"],
+
+    mutationFn: () =>
+      apiClient
+        .delete("/delete-wallet", {
+          data: {
+            id: id,
+          },
+        })
+        .then((res) => res.data.data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["wallets"],
+      });
+    },
+    onError: (error: any) => {
+      console.log("🚀 ~ file: index.tsx:47 ~ onError ~ error", error);
+    },
+  });
+  console.log("hhh",data)
+
   const handleOpenWallet = () => {
     navigation.navigate("ViewWallet", { address: walletAddress });
   };
@@ -92,7 +119,9 @@ const WalletContainer: React.FC<WalletContainerProps> = ({
       if (finished) {
         containerHeight.value = withTiming(0, { duration: 100 }, (finished) => {
           if (finished) {
-            runOnJS(deleteWallet)(id);
+            //runOnJS(deleteWallet)(id);
+            console.log("delete walletsssss");
+            runOnJS(mutate)();
           }
         });
       }
@@ -202,7 +231,7 @@ const WalletContainer: React.FC<WalletContainerProps> = ({
                       fontSize: 10,
                     }}
                   >
-                   Wallet: {walletName}
+                    Wallet: {walletName}
                   </Text>
                 </View>
                 <View
@@ -214,7 +243,7 @@ const WalletContainer: React.FC<WalletContainerProps> = ({
                 >
                   <Text
                     style={{
-                      color:textColor ,
+                      color: textColor,
                       fontFamily: "Satoshi-Black",
                       fontSize: 18,
                     }}
@@ -227,9 +256,7 @@ const WalletContainer: React.FC<WalletContainerProps> = ({
                       color: textColor,
                     }}
                   >
-                    {walletBalanceUSD
-                      ? "$" + walletBalanceUSD.toFixed(2)
-                      : "--"}
+                    {walletBalanceUSD ? formatUsd(walletBalanceUSD) : "--"}
                   </Text>
                 </View>
                 <Text
@@ -248,6 +275,7 @@ const WalletContainer: React.FC<WalletContainerProps> = ({
           </View>
         </Animated.View>
       </GestureDetector>
+
     </ReanimatedSwipeable>
   );
 };

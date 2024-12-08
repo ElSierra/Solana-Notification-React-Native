@@ -136,7 +136,9 @@ export const List: React.FC<ListProps> = ({ refetch, isFetching }) => {
         refreshControl={
           <RefreshControl
             refreshing={isFetching}
-            onRefresh={refetch}
+            onRefresh={()=>{
+              refetch()
+            }}
             colors={["white", "green", "orange"]}
             progressBackgroundColor={"black"}
           />

@@ -23,24 +23,16 @@ export default function Header() {
         padding: 20,
       }}
     >
-      <ImageBackground
-        source={
-          type === "guest"
-            ? require("../../../../assets/logo.png")
-            : authData?.picture
-        }
-        blurRadius={200}
-        style={{ padding: 20, overflow: "hidden", borderRadius: 9999 }}
-      >
+      
         <Image
           source={
             type === "guest"
               ? require("../../../../assets/logo.png")
               : authData?.picture
           }
-          style={{ width: 80, height: 80, borderRadius: 9999 }}
+          style={{ width: 150, aspectRatio:1,borderRadius:15  }}
         />
-      </ImageBackground>
+   
       <Text style={{ color }}>
         {type === "guest" ? "Guest" : authData?.name || "Loading..."}
       </Text>

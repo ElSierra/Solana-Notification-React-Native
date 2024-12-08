@@ -47,7 +47,6 @@ type TokenState = {
   clearToken: () => void;
 };
 
-
 export const useTokenStore = create<TokenState>((set) => ({
   token: null,
   isTokenReady: false,
@@ -66,4 +65,14 @@ export const useTokenStore = create<TokenState>((set) => ({
     }
   },
   clearToken: () => set({ token: null, isTokenReady: false }),
+}));
+
+type FingerPrintState = {
+  isFingerPrintSuccess: boolean;
+  setFingerPrintSuccess: (value: boolean) => void;
+};
+export const useIsFingerPrintSuccess = create<FingerPrintState>((set) => ({
+  isFingerPrintSuccess: false,
+  setFingerPrintSuccess: (value: boolean) =>
+    set({ isFingerPrintSuccess: value }),
 }));

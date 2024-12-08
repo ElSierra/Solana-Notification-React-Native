@@ -1,10 +1,11 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import CreateWallet from "../components/global/createWallet/CreateWallet";
-import { useIsNotSignedIn, useIsSignedIn } from "../hooks/isSignedIn";
+import { useCheckFingerPrint, useIsNotSignedIn, useIsSignedIn } from "../hooks/isSignedIn";
 import EmojiList from "../screen/EmojiList";
 import SignIn from "../screen/SignIn";
 import { ViewWallet } from "../screen/ViewWallet";
 import { BottomTabNav, MyTabs } from "./BottomTabNavigation";
+import { FingerPrint } from "../screen/FingerPrint";
 
 export const RootStack = createNativeStackNavigator({
   screenOptions: {
@@ -15,11 +16,20 @@ export const RootStack = createNativeStackNavigator({
   },
 
   screens: {
+
+    
     SignIn: {
       if: useIsNotSignedIn,
       screen: SignIn,
       options: {
         animation: "simple_push",
+      },
+    },
+    FingerPrint:{
+      if: useCheckFingerPrint,
+      screen: FingerPrint,
+      options: {
+        presentation: "fullScreenModal",
       },
     },
     Tabs: {
