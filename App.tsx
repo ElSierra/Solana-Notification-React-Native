@@ -3,6 +3,7 @@ import {
   Alert,
   AppState,
   AppStateStatus,
+  PermissionsAndroid,
   Platform,
   useWindowDimensions,
   View,
@@ -79,6 +80,7 @@ export default function App() {
   }
 
   useEffect(() => {
+    
     const subscription = AppState.addEventListener("change", onAppStateChange);
     OneSignal.Debug.setLogLevel(LogLevel.Verbose);
     OneSignal.Notifications.requestPermission(true);

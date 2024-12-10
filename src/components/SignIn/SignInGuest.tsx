@@ -37,8 +37,8 @@ export const SignInGuest:FC<translateYBottom> = ({translateYBottom,opacity}) => 
     })
     .onStart((e) => {
       "worklet";
-      runOnJS(setAuth)("guest");
-      runOnJS(setClicked)(true);
+      // runOnJS(setAuth)("guest");
+      //runOnJS(setClicked)(true);
       scale.value = withSpring(1);
     });
 

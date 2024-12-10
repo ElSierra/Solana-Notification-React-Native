@@ -54,6 +54,7 @@ import { RootStack } from "./navigation/RootStackNavigtaion";
 import { useAuth, useTokenStore } from "./store/auth";
 import { getValueFor } from "./util/secureStore";
 import { OneSignal } from "react-native-onesignal";
+import { requestNotificationPermission } from "./util/permissionRequest";
 type RootStackParamList = StaticParamList<typeof RootStack>;
 
 declare global {
@@ -165,6 +166,7 @@ export default function Main() {
   };
 
   useEffect(() => {
+    requestNotificationPermission();
     hydrateToken();
   }, []);
 
