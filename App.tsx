@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useLayoutEffect, useState } from "react";
 import {
+  Alert,
   AppState,
   AppStateStatus,
   Platform,
@@ -38,19 +39,26 @@ import {
   configureReanimatedLogger,
   ReanimatedLogLevel,
 } from "react-native-reanimated";
-import { ReactScan } from "react-scan/native";
+
 import {
   focusManager,
   QueryClient,
   QueryClientProvider,
 } from "@tanstack/react-query";
 import { queryClient } from "./src/util/queryClient";
-
+import { LogLevel, OneSignal } from "react-native-onesignal";
+import Constants from "expo-constants";
 enableFreeze(true);
 configureReanimatedLogger({
   level: ReanimatedLogLevel.warn,
   strict: false, // Reanimated runs in strict mode by default
 });
+
+// OneSignal.Debug.setLogLevel(LogLevel.Verbose);
+// OneSignal.initialize(Constants?.expoConfig?.extra?.oneSignalAppId);
+console.log(process.env.EXPO_PUBLIC_API_URL);
+// // Also need enable notifications to complete OneSignal setup
+// OneSignal.Notifications.requestPermission(true);
 export default function App() {
   const [loaded, error] = useFonts({
     // noto: require("./assets/fonts/NotoColorEmoji.ttf"),
@@ -72,10 +80,14 @@ export default function App() {
 
   useEffect(() => {
     const subscription = AppState.addEventListener("change", onAppStateChange);
+    OneSignal.Debug.setLogLevel(LogLevel.Verbose);
+    OneSignal.Notifications.requestPermission(true);
+
+    OneSignal.initialize(process.env.EXPO_PUBLIC_ONE_SIGNAL_APP_ID as string);
+    // Handle notification received
 
     return () => subscription.remove();
   }, []);
-
 
   const [appIsReady, setAppIsReady] = useState(false);
   const { width: windowWith, height: windowHeight } = useWindowDimensions();
@@ -132,6 +144,7 @@ export default function App() {
             </View>
           )}
           <QueryClientProvider client={queryClient}>
+            
             <Main />
           </QueryClientProvider>
         </SafeAreaProvider>

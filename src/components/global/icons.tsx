@@ -347,3 +347,21 @@ export const FingerPrintIcon: React.FC<IconProps> = ({ color, size }) => (
     />
   </Svg>
 );
+
+export const UpIcon: React.FC<IconProps> = ({ color, size }) => (
+  <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+    <Path
+      fill={color}
+      d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm3.53 10.03c-.15.15-.34.22-.53.22s-.38-.07-.53-.22l-1.72-1.72v5.19c0 .41-.34.75-.75.75s-.75-.34-.75-.75v-5.19l-1.72 1.72c-.29.29-.77.29-1.06 0a.754.754 0 010-1.06l3-3c.29-.29.77-.29 1.06 0l3 3c.29.29.29.77 0 1.06z"
+    />
+  </Svg>
+);
+
+export const DownIcon: React.FC<IconProps> = ({ color, size }) => (
+  <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+    <Path
+      fill={color}
+      d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm3.53 11.03l-3 3c-.15.15-.34.22-.53.22s-.38-.07-.53-.22l-3-3a.754.754 0 010-1.06c.29-.29.77-.29 1.06 0l1.72 1.72V8.5c0-.41.34-.75.75-.75s.75.34.75.75v5.19l1.72-1.72c.29-.29.77-.29 1.06 0 .29.29.29.77 0 1.06z"
+    />
+  </Svg>
+);

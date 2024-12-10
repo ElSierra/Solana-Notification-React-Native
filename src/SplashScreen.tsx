@@ -115,8 +115,9 @@ export const SplashScreenView: React.FC<SplashScreenViewProps> = ({
       };
     },
     (start) => {
+      console.log("qwidth", qWidth);
       animatedPosition.value = {
-        x: windowWith / 2 - start.x / 2,
+        x: (windowWith - qWidth) / 2,
         y: start.y + ADDHEIGHT,
       };
       animatedDioPosition.value = { x: windowHeight, y: start.y - 10 };
@@ -162,12 +163,12 @@ export const SplashScreenView: React.FC<SplashScreenViewProps> = ({
     (canStart) => {
       if (canStart) {
         animatedPosition.value = withTiming({
-          x: windowWith / 2 - qWidth / 2,
+          x: -windowWith,
           y: quiY + ADDHEIGHT,
         });
         animatedDioPosition.value = withTiming(
           {
-            x: windowWith / 2 - qWidth / 2,
+            x: windowWith,
             y: quiY + ADDHEIGHT,
           },
           undefined,
@@ -257,24 +258,24 @@ export const SplashScreenView: React.FC<SplashScreenViewProps> = ({
             <Text
               style={{
                 fontFamily: "Satoshi-Black",
-                fontSize: 62,
+                fontSize: 30,
                 color: "white",
                 opacity: 0,
               }}
             >
-              Sol
+              Watch
             </Text>
           </View>
           <View ref={dioRef}>
             <Text
               style={{
                 fontFamily: "Satoshi-Black",
-                fontSize: 62,
+                fontSize: 30,
                 color: "white",
                 opacity: 0,
               }}
             >
-              Ping
+              Lana
             </Text>
           </View>
         </View>
@@ -307,11 +308,11 @@ export const SplashScreenView: React.FC<SplashScreenViewProps> = ({
             <Text
               style={{
                 fontFamily: "Satoshi-Black",
-                fontSize: 62,
+                fontSize: 30,
                 color: Theme.colors.primary,
               }}
             >
-              Sol
+              Watch
             </Text>
           </Animated.View>
           <Animated.View
@@ -326,11 +327,11 @@ export const SplashScreenView: React.FC<SplashScreenViewProps> = ({
             <Text
               style={{
                 fontFamily: "Satoshi-Black",
-                fontSize: 62,
+                fontSize: 30,
                 color: Theme.colors.primary,
               }}
             >
-              Ping
+              lana
             </Text>
           </Animated.View>
         </View>

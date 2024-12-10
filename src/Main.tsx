@@ -5,6 +5,10 @@ import {
   Platform,
   Touchable,
   TouchableOpacity,
+  Modal,
+  Alert,
+  StyleSheet,
+  Pressable,
 } from "react-native";
 import React, {
   useCallback,
@@ -12,6 +16,7 @@ import React, {
   useLayoutEffect,
   useMemo,
   useRef,
+  useState,
 } from "react";
 import Animated, {
   clamp,
@@ -46,8 +51,9 @@ import AddWalletBottomSheet from "./components/global/bottom-sheet/AddWalletBott
 import { LinearGradient } from "expo-linear-gradient";
 
 import { RootStack } from "./navigation/RootStackNavigtaion";
-import { useTokenStore } from "./store/auth";
+import { useAuth, useTokenStore } from "./store/auth";
 import { getValueFor } from "./util/secureStore";
+import { OneSignal } from "react-native-onesignal";
 type RootStackParamList = StaticParamList<typeof RootStack>;
 
 declare global {
@@ -68,13 +74,19 @@ export default function Main() {
   const viewBottomSheetModalRef = useRef<BottomSheetModal>(null);
   const { width, height } = useWindowDimensions();
   console.log("🚀 ~ file: App.tsx:27 ~ App ~ height:", height);
-
+  const user = useAuth((state) => state.user);
   const bottomSheetState = useAddWalletBottomSheet((state) => state.open);
   const viewBottomSheetState = useEmojiBottomSheet((state) => state.open);
 
   // variables
 
   // callbacks
+
+  useEffect(() => {
+    if (user) {
+      OneSignal.login(user.id);
+    }
+  }, [user]);
 
   useEffect(() => {
     if (bottomSheetState) {
@@ -164,9 +176,11 @@ export default function Main() {
   //     res
   //   );
   // });
+  const [modalVisible, setModalVisible] = useState(false);
 
   return (
     <>
+  
       <StatusBar
         animated={true}
         style={Mode === "dark" ? "light" : "dark"}
@@ -190,3 +204,46 @@ export default function Main() {
     </>
   );
 }
+
+const styles = StyleSheet.create({
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 35,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  button: {
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2,
+  },
+  buttonOpen: {
+    backgroundColor: "#F194FF",
+  },
+  buttonClose: {
+    backgroundColor: "#2196F3",
+  },
+  textStyle: {
+    color: "white",
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: "center",
+  },
+});

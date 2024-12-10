@@ -19,8 +19,7 @@ ios
 *.mobileprovision
 *.apk
 *.abb
-.env
-google-services.json
+
 
 # Metro
 .metro-health-check*
@@ -39,3 +38,7 @@ yarn-error.*
 
 # typescript
 *.tsbuildinfo
+
+# uncomment before building the app for production
+env
+google-services.json

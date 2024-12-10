@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "SolPing",
+    "name": "Watchlana",
     "slug": "solping",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -31,6 +31,15 @@
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
+      [
+        "onesignal-expo-plugin",
+        {
+          "mode": "development",
+          
+          "smallIcons":["./assets/ic_stat_onesignal_default.png","./assets/receive_icon.png","./assets/sent_icon.png"],
+          "largeIcons":["./assets/ic_onesignal_large_icon_default.png"]
+        }
+      ],
       [
         "expo-font",
         {
@@ -69,6 +78,7 @@
       "reactCompiler": true
     },
     "extra": {
+      "oneSignalAppId":"6d9d1620-dbed-4ebf-8c04-94f2ce81450e",
       "eas": {
         "projectId": "fd178647-6835-424b-8bc8-44fa20e60003"
       }
