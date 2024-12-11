@@ -52,6 +52,7 @@ export default function Explore() {
   const walletState = useWalletStore((state) => state);
   const addWalletList = useWalletStore((state) => state.addWalletList);
 
+ 
   const { isPending, error, data, isFetching, refetch } = useQuery({
     queryKey: ["notifications"],
     queryFn: () => apiClient.get("/notifications").then((res) => res.data.data),
@@ -74,8 +75,8 @@ export default function Explore() {
         {
           translateY: interpolate(
             animatedPosition.value,
-            [0, height],
-            [0, -100]
+            [0, 300],
+            [0, -10]
           ),
         },
       ],

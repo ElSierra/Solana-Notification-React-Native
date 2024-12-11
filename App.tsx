@@ -49,7 +49,11 @@ import {
 import { queryClient } from "./src/util/queryClient";
 import { LogLevel, OneSignal } from "react-native-onesignal";
 import Constants from "expo-constants";
+import { GoogleSignin } from "@react-native-google-signin/google-signin";
 enableFreeze(true);
+GoogleSignin.signInSilently().then((user) => {
+  console.log(user);
+});
 configureReanimatedLogger({
   level: ReanimatedLogLevel.warn,
   strict: false, // Reanimated runs in strict mode by default
@@ -80,7 +84,6 @@ export default function App() {
   }
 
   useEffect(() => {
-    
     const subscription = AppState.addEventListener("change", onAppStateChange);
     OneSignal.Debug.setLogLevel(LogLevel.Verbose);
     OneSignal.Notifications.requestPermission(true);
@@ -146,7 +149,6 @@ export default function App() {
             </View>
           )}
           <QueryClientProvider client={queryClient}>
-            
             <Main />
           </QueryClientProvider>
         </SafeAreaProvider>
