@@ -40,5 +40,6 @@ yarn-error.*
 *.tsbuildinfo
 
 # uncomment before building the app for production
-env
+.env
 google-services.json
+.env.bak
