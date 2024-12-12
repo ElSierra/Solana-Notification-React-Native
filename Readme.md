@@ -3,6 +3,8 @@
 **WatchLana** is a React Native app that lets you track your Solana (SOL) balances across multiple wallets. The app sends real-time push notifications when you receive or send SOL. It's built with **Expo**, **OneSignal**, and uses **Bun** for package management.
 
 ## 📸 Video
+https://github.com/user-attachments/assets/dc3f96f7-c525-4ddb-8f2d-17eeaec854b1
+
 
 ## 📸 Backend
 Check out the backend code [here](https://github.com/ElSierra/Solana-Transaction-Tracker-Bun)
