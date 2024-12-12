@@ -32,6 +32,9 @@ import apiClient from "../util/axiosInstance";
 import { formatUsd } from "../util/formatUsd";
 import { OneSignal } from "react-native-onesignal";
 import { LoadingWalletContainer } from "../components/Notification/List/LoadingWalletContainer";
+import { WatchLanaIcon } from "../components/global/icons";
+import { Theme } from "../constants/Theme";
+import { Image } from "expo-image";
 
 export default function Explore() {
   const bottomTabHeight = useBottomTabBarHeight();
@@ -52,7 +55,6 @@ export default function Explore() {
   const walletState = useWalletStore((state) => state);
   const addWalletList = useWalletStore((state) => state.addWalletList);
 
- 
   const { isPending, error, data, isFetching, refetch } = useQuery({
     queryKey: ["notifications"],
     queryFn: () => apiClient.get("/notifications").then((res) => res.data.data),
@@ -73,11 +75,7 @@ export default function Explore() {
     return {
       transform: [
         {
-          translateY: interpolate(
-            animatedPosition.value,
-            [0, 300],
-            [0, -10]
-          ),
+          translateY: interpolate(animatedPosition.value, [0, 300], [0, -10]),
         },
       ],
     };
@@ -116,7 +114,18 @@ export default function Explore() {
           Notifications
         </Text>
       </Animated.View>
-    
+      {(data && data.length ===0) && (
+        <View
+          style={{
+            width: "100%",
+            justifyContent: "center",
+
+            alignItems: "center",
+          }}
+        >
+         <Image source={require("../../assets/bird.png")} style={{width: 400, height: 400}}/>
+        </View>
+      )}
       {isFetching ? (
         <LoadingWalletContainer quantity={8} />
       ) : (

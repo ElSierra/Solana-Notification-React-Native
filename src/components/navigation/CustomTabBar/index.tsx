@@ -127,7 +127,7 @@ export default function CustomTabBar({
       style={[
         {
           flexDirection: "row",
-          height: Platform.OS === "ios" ? 24 * 4 : 24 * 2.4,
+          height: Platform.OS === "ios" ? 24 * 4 : 24 * 2.4+ bottom,
           backgroundColor: "#00000000",
           // borderTopRightRadius: 20,
           // borderTopLeftRadius: 20,
@@ -151,7 +151,7 @@ export default function CustomTabBar({
           bottom: 0,
           left: 0,
           right: 0,
-          height: Platform.OS === "ios" ? 24 * 4 : 24 * 2.4,
+          height: Platform.OS === "ios" ? 24 * 4 : (24 * 2.4+ bottom),
           zIndex: 0,
         }}
       />
