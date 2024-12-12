@@ -50,6 +50,10 @@ import { queryClient } from "./src/util/queryClient";
 import { LogLevel, OneSignal } from "react-native-onesignal";
 import Constants from "expo-constants";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
+import { SystemBars } from "react-native-edge-to-edge";
+import { useIsDarkMode } from "./src/hooks/getMode";
+import SystemNavigationBar from "react-native-system-navigation-bar";
+
 enableFreeze(true);
 GoogleSignin.signInSilently().then((user) => {
   console.log(user);
@@ -58,6 +62,7 @@ configureReanimatedLogger({
   level: ReanimatedLogLevel.warn,
   strict: false, // Reanimated runs in strict mode by default
 });
+SystemNavigationBar.setNavigationColor("transparent");
 
 // OneSignal.Debug.setLogLevel(LogLevel.Verbose);
 // OneSignal.initialize(Constants?.expoConfig?.extra?.oneSignalAppId);
@@ -96,7 +101,7 @@ export default function App() {
 
   const [appIsReady, setAppIsReady] = useState(false);
   const { width: windowWith, height: windowHeight } = useWindowDimensions();
-
+const dark = useIsDarkMode();
   const setAnimationFinished = useAnimationFinished(
     (state) => state.setAnimationFinished
   );
@@ -123,8 +128,11 @@ export default function App() {
     setAnimationFinished(true);
   };
 
+  const style = dark ? "light" : "dark";
+  
   return (
     <>
+    <SystemBars style={style} />
       <GestureHandlerRootView
         style={{ flex: 1, backgroundColor: "black" }}
         onLayout={onLayoutRootView}

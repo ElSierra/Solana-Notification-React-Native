@@ -8,7 +8,7 @@ import { useWalletStore } from "../../../store/wallet";
 
 const LinearBackground = () => {
   const dark = useIsDarkMode();
-  const { top } = useSafeAreaInsets();
+  const { top,bottom } = useSafeAreaInsets();
   const { height } = useWindowDimensions();
   const walletAdjustSol = useWalletStore((state) => state.adjustSOL);
   console.log(
@@ -40,7 +40,7 @@ const LinearBackground = () => {
           top: 0,
           left: 0,
           right: 0,
-          height: height + top,
+          height: height + top + bottom,
           zIndex: 0,
         }}
       />

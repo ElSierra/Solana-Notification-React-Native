@@ -14,10 +14,11 @@ import { useAnimationFinished } from "../store/ui";
 import { useFocusEffect } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
 import { useIsDarkMode } from "../hooks/getMode";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function SignIn() {
   const { width, height } = useWindowDimensions();
-
+  const { top, bottom } = useSafeAreaInsets();
   const animationFinished = useAnimationFinished(
     (state) => state.animationFinished
   );
@@ -94,7 +95,7 @@ export default function SignIn() {
               top: 0,
               left: 0,
               right: 0,
-              height: height + 40,
+              height: height + top + bottom,
               zIndex: 0,
             }}
           />

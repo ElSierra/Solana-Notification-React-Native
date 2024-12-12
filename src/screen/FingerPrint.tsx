@@ -21,6 +21,7 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 import * as LocalAuthentication from "expo-local-authentication";
+import { useIsDarkMode } from "../hooks/getMode";
 export const FingerPrint = () => {
   const { width, height } = useWindowDimensions();
   const [value, setValue] = useState(10);
@@ -81,11 +82,15 @@ export const FingerPrint = () => {
     };
   });
 
-  useAnimatedReaction(()=>{
+  useAnimatedReaction(
+    () => {},
+    () => {
+      translateY.value = withRepeat(withTiming(30), -1, true);
+    }
+  );
 
-  },()=>{
-    translateY.value = withRepeat(withTiming(30),-1,true)
-  })
+  const dark = useIsDarkMode();
+  const textColor = dark ? "white" : "black";
   return (
     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
       <LinearBackground />
@@ -119,7 +124,7 @@ export const FingerPrint = () => {
         />
         <Text
           style={{
-            color: "white",
+            color: textColor,
 
             fontSize: 14,
             textAlign: "center",
@@ -130,18 +135,18 @@ export const FingerPrint = () => {
         </Text>
       </View>
       <View style={{ position: "absolute" }}>
-        <AnimatedCircularProgress percentage={value} />
+        <AnimatedCircularProgress percentage={value} color={textColor}/>
       </View>
       <GestureDetector gesture={tap}>
         <Animated.View style={style}>
-          <FingerPrintIcon size={100} color="white" />
+          <FingerPrintIcon size={100} color={textColor} />
         </Animated.View>
       </GestureDetector>
 
       <View style={{ position: "absolute", bottom: 0, padding: 40 }}>
         <Text
           style={{
-            color: "white",
+            color: textColor,
 
             fontSize: 14,
             textAlign: "center",

@@ -17,6 +17,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { StatusBar } from "react-native";
 import ReactNativeHapticFeedback from "react-native-haptic-feedback";
 import { TransparentCircleOverlay } from "./components/Home/Cicrle";
+import { useIsDarkMode } from "./hooks/getMode";
 type SplashScreenViewProps = {
   finishAnimation: () => void;
 };
