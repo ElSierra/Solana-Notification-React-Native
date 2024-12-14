@@ -5,6 +5,7 @@ import { DrawerItem } from "@react-navigation/drawer";
 import { Image, ImageBackground } from "expo-image";
 import { useAuth } from "../../../store/auth";
 import { useIsDarkMode } from "../../../hooks/getMode";
+import { Theme } from "../../../constants/Theme";
 
 export default function Header() {
   const type = useAuth((state) => state.type);
@@ -16,7 +17,7 @@ export default function Header() {
       style={{
         width: "100%",
         justifyContent: "center",
-        marginTop: 40,
+      
         alignItems: "center",
         paddingLeft: 20,
 
@@ -27,15 +28,17 @@ export default function Header() {
         <Image
           source={
             type === "guest"
-              ? require("../../../../assets/logo.png")
+              ? require("../../../../assets/icon.png")
               : authData?.picture
           }
-          style={{ width: 150, aspectRatio:1,borderRadius:15  }}
+          style={{ width: 150, aspectRatio:1,borderRadius:10  }}
         />
    
-      <Text style={{ color }}>
-        {type === "guest" ? "Guest" : authData?.name || "Loading..."}
-      </Text>
+      <View style={{width:"100%",paddingLeft:5}}>
+        <Text style={{ color, fontFamily: Theme.fonts.SatoshiBold,textAlign:"left", fontSize:20 }}>
+          {type === "guest" ? "Guest" : authData?.name || "Loading..."}
+        </Text>
+      </View>
     </View>
   );
 }

@@ -17,6 +17,7 @@ import apiClient from "../util/axiosInstance";
 import { formatUsd } from "../util/formatUsd";
 import { OneSignal } from "react-native-onesignal";
 import { NotificationContainer } from "../components/Notification/List/NotificationContainer";
+import { useIsFingerPrintSuccess } from "../store/auth";
 
 export default function Home() {
   const bottomTabHeight = useBottomTabBarHeight();
@@ -36,7 +37,9 @@ export default function Home() {
 
   const walletState = useWalletStore((state) => state);
   const addWalletList = useWalletStore((state) => state.addWalletList);
-
+  const isFingerPrint = useIsFingerPrintSuccess(
+    (state) => state.isFingerPrintSuccess
+  );
   const { isPending, error, data, isFetching, refetch } = useQuery({
     queryKey: ["wallets"],
     queryFn: () =>
@@ -104,34 +107,77 @@ export default function Home() {
           // solAnimStyle,
         ]}
       >
-        <Text
-          style={{ fontFamily: "Satoshi-Bold", color: textColor, fontSize: 14 }}
-        >
-          Prev: {walletState?.prevBalance?.toFixed(2) || "0.00"} SOL
-        </Text>
-        <Text
-          style={{
-            fontFamily: "Satoshi-Black",
-            color: textColor,
-            fontSize: 30,
-          }}
-        >
-          {walletState?.currentBalance?.toFixed(2) || "0.00"} SOL
-        </Text>
-        <Text
-          style={{
-            fontFamily: "Satoshi-Regular",
-            color: textColor,
-            fontSize: 18,
-          }}
-        >
-          {formatUsd(walletState?.currentBalanceUSD || 0)}
-        </Text>
+        <>
+          {isFingerPrint ? (
+            <Text
+              style={{
+                fontFamily: "Satoshi-Bold",
+                color: textColor,
+                fontSize: 14,
+              }}
+            >
+              Prev: {walletState?.prevBalance?.toFixed(2) || "0.00"} SOL
+            </Text>
+          ) : (
+            <Text
+              style={{
+                fontFamily: "Satoshi-Bold",
+                color: textColor,
+                fontSize: 14,
+              }}
+            >
+              Prev: **** SOL
+            </Text>
+          )}
+        </>
+        {isFingerPrint ? (
+          <Text
+            style={{
+              fontFamily: "Satoshi-Black",
+              color: textColor,
+              fontSize: 30,
+            }}
+          >
+            {walletState?.currentBalance?.toFixed(2) || "0.00"} SOL
+          </Text>
+        ) : (
+          <Text
+            style={{
+              fontFamily: "Satoshi-Black",
+              color: textColor,
+              fontSize: 30,
+            }}
+          >
+            {"****"} SOL
+          </Text>
+        )}
+        <>
+          {isFingerPrint ? (
+            <Text
+              style={{
+                fontFamily: "Satoshi-Regular",
+                color: textColor,
+                fontSize: 18,
+              }}
+            >
+              {formatUsd(walletState?.currentBalanceUSD || 0)}
+            </Text>
+          ) : (
+            <Text
+              style={{
+                fontFamily: "Satoshi-Regular",
+                color: textColor,
+                fontSize: 24,
+              }}
+            >
+              ****
+            </Text>
+          )}
+        </>
       </Animated.View>
 
-      
       {/* <Button title="Display Notification" onPress={onDisplayNotification} /> */}
-      {isFetching ? (
+      {(isFetching || !isFingerPrint) ? (
         <LoadingWalletContainer quantity={8} />
       ) : (
         <MemoizedList refetch={refetch} isFetching={isFetching} />

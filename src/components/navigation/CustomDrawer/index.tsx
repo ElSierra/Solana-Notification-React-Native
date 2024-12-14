@@ -60,7 +60,7 @@ const CustomDrawer = () => {
           zIndex: 0,
         }}
       />
-      <View style={{ paddingTop: 40 }}>
+      <View style={{ paddingTop: 30 }}>
         <Header />
       </View>
 

@@ -22,6 +22,10 @@ import Animated, {
 } from "react-native-reanimated";
 import * as LocalAuthentication from "expo-local-authentication";
 import { useIsDarkMode } from "../hooks/getMode";
+import { BlurView } from "expo-blur";
+import { Canvas, TwoPointConicalGradient, vec,Rect } from "@shopify/react-native-skia";
+import NewLinear from "../components/global/LinearBackground/NewLinear";
+
 export const FingerPrint = () => {
   const { width, height } = useWindowDimensions();
   const [value, setValue] = useState(10);
@@ -92,9 +96,9 @@ export const FingerPrint = () => {
   const dark = useIsDarkMode();
   const textColor = dark ? "white" : "black";
   return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <LinearBackground />
-
+    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" ,backgroundColor:'#000000D6'}}>
+      {<NewLinear /> }
+      
       <Animated.View
         style={[{ position: "absolute", top: height / 3 }, emojiAnim]}
       >
@@ -135,7 +139,7 @@ export const FingerPrint = () => {
         </Text>
       </View>
       <View style={{ position: "absolute" }}>
-        <AnimatedCircularProgress percentage={value} color={textColor}/>
+        <AnimatedCircularProgress percentage={value} color={textColor} />
       </View>
       <GestureDetector gesture={tap}>
         <Animated.View style={style}>

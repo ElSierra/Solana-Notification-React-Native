@@ -25,13 +25,13 @@ export const RootStack = createNativeStackNavigator({
         animation: "simple_push",
       },
     },
-    FingerPrint:{
-      if: useCheckFingerPrint,
-      screen: FingerPrint,
-      options: {
-        presentation: "fullScreenModal",
-      },
-    },
+    // FingerPrint:{
+    //   if: useCheckFingerPrint,
+    //   screen: FingerPrint,
+    //   options: {
+    //     presentation: "fullScreenModal",
+    //   },
+    // },
     Tabs: {
       if: useIsSignedIn,
       screen: BottomTabNav,
