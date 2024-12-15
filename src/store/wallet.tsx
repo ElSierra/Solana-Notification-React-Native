@@ -34,6 +34,8 @@ interface WalletState {
   prevBalanceUSD?: number;
   currentBalance?: number;
   currentBalanceUSD?: number;
+  usdtBalance?: number;
+  usdtBalanceUSD?: number;
   addDummyData: () => void;
   addWalletData: (newWallet: {
     walletName: string;
@@ -51,6 +53,8 @@ interface WalletState {
     prevBalanceUSD,
     currentBalance,
     currentBalanceUSD,
+    usdtBalance,
+    usdcBalance,
   }: {
     walletData: WalletData[];
     adjustSOL?: string;
@@ -59,6 +63,8 @@ interface WalletState {
     prevBalanceUSD?: number;
     currentBalance?: number;
     currentBalanceUSD?: number;
+    usdtBalance?: number;
+    usdcBalance?: number;
   }) => void;
 }
 
@@ -134,6 +140,8 @@ export const useWalletStore = create<WalletState>()(
             prevBalanceUSD: data.prevBalanceUSD,
             currentBalance: data.currentBalance,
             currentBalanceUSD: data.currentBalanceUSD,
+            usdtBalance: data.usdtBalance,
+            usdtBalanceUSD: data.usdcBalance,
           };
         }),
       // Remove a wallet by its name

@@ -33,6 +33,7 @@ import { formatUsd } from "../../../util/formatUsd";
 import { useMutation } from "@tanstack/react-query";
 import apiClient from "../../../util/axiosInstance";
 import { queryClient } from "../../../util/queryClient";
+import { TokenContainer } from "./TokenContainer";
 type WalletContainerProps = {
   walletName: string;
   walletAddress: string;
@@ -40,6 +41,8 @@ type WalletContainerProps = {
   walletBalanceUSD?: number;
   emoji: number;
   id: string;
+  usdtBalance?: number;
+  usdcBalance?: number;
 };
 
 const WalletContainer: React.FC<WalletContainerProps> = ({
@@ -49,6 +52,8 @@ const WalletContainer: React.FC<WalletContainerProps> = ({
   emoji,
   id,
   walletName,
+  usdtBalance,
+  usdcBalance,
 }) => {
   const vibrateAnimatedEnd = () => {
     const options = {
@@ -58,7 +63,7 @@ const WalletContainer: React.FC<WalletContainerProps> = ({
     ReactNativeHapticFeedback.trigger("soft", options);
   };
   const isDarkMode = useIsDarkMode();
-
+  const [oneLine, setOneline] = useState(true);
   const { width } = useWindowDimensions();
   const navigation = useNavigation<HomeNavigationProp>();
   // const openWalletState = useViewWalletBottomSheet((state) => state.setSate);
@@ -98,21 +103,27 @@ const WalletContainer: React.FC<WalletContainerProps> = ({
       console.log("🚀 ~ file: index.tsx:47 ~ onError ~ error", error);
     },
   });
-  console.log("hhh",data)
+  console.log("hhh", data);
 
-  const handleOpenWallet = () => {
-    navigation.navigate("ViewWallet", { address: walletAddress });
-  };
   const deleteWallet = useWalletStore((state) => state.removeWalletData);
 
+  const [isOpened, setIsOpened] = useState(false);
   const containerDrag = useSharedValue(0);
   const containerHeight = useSharedValue(90);
+  const textHeight = useSharedValue(15);
+  const innerContainerHeight = useSharedValue(90);
   const getEmojiFromId = useMemo(
     () => (id: number) => {
       return emojis.find((emoji) => emoji.id === id)?.emoji;
     },
     []
   );
+
+  const handleOpenWallet = () => {
+    setIsOpened(!isOpened);
+
+    // navigation.navigate("ViewWallet", { address: walletAddress });
+  };
   const handleDeleteWallet = () => {
     console.log("delete wallet");
     containerDrag.value = withTiming(-width, { duration: 100 }, (finished) => {
@@ -153,7 +164,29 @@ const WalletContainer: React.FC<WalletContainerProps> = ({
       runOnJS(handleOpenWallet)();
     });
 
+  useAnimatedReaction(
+    () => isOpened,
+    (value) => {
+      if (value) {
+        containerHeight.value = withTiming(135, { duration: 150 }, () => {
+          textHeight.value = withTiming(30, { duration: 150 });
+          runOnJS(setOneline)(false);
+        });
+        return;
+      }
+      containerHeight.value = withTiming(90, { duration: 150 }, () => {
+        runOnJS(setOneline)(true);
+        textHeight.value = withTiming(15, { duration: 150 });
+      });
+    }
+  );
   const textColor = isDarkMode ? "white" : "black";
+
+  const animatedTextStyle = useAnimatedStyle(() => {
+    return {
+      height: textHeight.value,
+    };
+  });
   return (
     <ReanimatedSwipeable
       containerStyle={[styles.swipeable, containerAnimStyle]}
@@ -167,115 +200,119 @@ const WalletContainer: React.FC<WalletContainerProps> = ({
     >
       <Animated.View style={{ height: 10 }} />
       <GestureDetector gesture={gesture}>
-        <Animated.View>
-          <View
-            style={{
-              backgroundColor: isDarkMode ? "#262626FF" : "#D2D2D2FF",
-              padding: 10,
-              borderRadius: 20,
-              width: "100%",
-            }}
+        <Animated.View
+          style={{
+            backgroundColor: isDarkMode ? "#262626FF" : "#D2D2D2FF",
+            padding: 10,
+            borderRadius: 20,
+            width: "100%",
+            height: "88%",
+          }}
+        >
+          <Animated.View
+            style={[
+              {
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
+              },
+            ]}
           >
-            <Animated.View
-              style={[
-                {
-                  flexDirection: "row",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                },
-              ]}
+            <View
+              style={{
+                width: 60,
+                backgroundColor: isDarkMode ? "#00000074" : "#FFFFFFB8",
+                borderRadius: 999,
+                height: 60,
+                justifyContent: "center",
+                alignItems: "center",
+                overflow: "hidden",
+                padding: 6,
+              }}
+            >
+              <Text
+                style={{
+                  fontSize: 25,
+                  includeFontPadding: false,
+                  fontFamily: "windows",
+                }}
+              >
+                {getEmojiFromId(emoji)}
+              </Text>
+            </View>
+            <View
+              style={{
+                flex: 1,
+                marginLeft: 10,
+                justifyContent: "space-evenly",
+                height: 60,
+              }}
             >
               <View
                 style={{
-                  width: 60,
-                  backgroundColor: isDarkMode ? "#00000074" : "#FFFFFFB8",
-                  borderRadius: 999,
-                  height: 60,
-                  justifyContent: "center",
-                  alignItems: "center",
-                  overflow: "hidden",
-                  padding: 6,
+                  padding: 2,
+                  backgroundColor: isDarkMode ? "#024D49FF" : "#04B675FF",
+                  borderRadius: 10,
+                  alignSelf: "flex-start",
                 }}
               >
                 <Text
-                  style={{
-                    fontSize: 25,
-                    includeFontPadding: false,
-                    fontFamily: "windows",
-                  }}
+                  ellipsizeMode="tail"
+                  style={[
+                    {
+                      fontFamily: "Satoshi-Regular",
+                      color: textColor,
+                      fontSize: 10,
+                    },
+                  ]}
                 >
-                  {getEmojiFromId(emoji)}
+                  Wallet: {walletName}
                 </Text>
               </View>
               <View
                 style={{
-                  flex: 1,
-                  marginLeft: 10,
-                  justifyContent: "space-evenly",
-                  height: 60,
+                  flexDirection: "row",
+                  width: "99%",
+                  justifyContent: "space-between",
                 }}
               >
-                <View
-                  style={{
-                    padding: 2,
-                    backgroundColor: isDarkMode ? "#024D49FF" : "#04B675FF",
-                    borderRadius: 10,
-                    alignSelf: "flex-start",
-                  }}
-                >
-                  <Text
-                    ellipsizeMode="tail"
-                    style={{
-                      fontFamily: "Satoshi-Regular",
-                      color: textColor,
-                      fontSize: 10,
-                    }}
-                  >
-                    Wallet: {walletName}
-                  </Text>
-                </View>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    width: "99%",
-                    justifyContent: "space-between",
-                  }}
-                >
-                  <Text
-                    style={{
-                      color: textColor,
-                      fontFamily: "Satoshi-Black",
-                      fontSize: 18,
-                    }}
-                  >
-                    {walletBalance ? walletBalance.toFixed(2) + " SOL" : "--"}
-                  </Text>
-                  <Text
-                    style={{
-                      fontFamily: "Satoshi-Black",
-                      color: textColor,
-                    }}
-                  >
-                    {walletBalanceUSD ? formatUsd(walletBalanceUSD) : "--"}
-                  </Text>
-                </View>
                 <Text
                   style={{
                     color: textColor,
-                    fontFamily: "satoshi-light",
-                    fontSize: 12,
+                    fontFamily: "Satoshi-Black",
+                    fontSize: 18,
                   }}
-                  numberOfLines={1}
-                  ellipsizeMode="tail"
                 >
-                  {walletAddress}
+                  {walletBalance ? walletBalance.toFixed(2) + " SOL" : "--"}
+                </Text>
+                <Text
+                  style={{
+                    fontFamily: "Satoshi-Black",
+                    color: textColor,
+                  }}
+                >
+                  {walletBalanceUSD ? formatUsd(walletBalanceUSD) : "--"}
                 </Text>
               </View>
-            </Animated.View>
-          </View>
+              <Animated.Text
+                style={[
+                  {
+                    color: textColor,
+                    fontFamily: "satoshi-light",
+                    fontSize: 12,
+                  },
+                  animatedTextStyle,
+                ]}
+                numberOfLines={!oneLine ? 2 : 1}
+                ellipsizeMode="tail"
+              >
+                {walletAddress}
+              </Animated.Text>
+              {!oneLine && <TokenContainer isExpanded={!oneLine} usdt={usdtBalance||0} usdc={usdcBalance||0} />}
+            </View>
+          </Animated.View>
         </Animated.View>
       </GestureDetector>
-
     </ReanimatedSwipeable>
   );
 };
