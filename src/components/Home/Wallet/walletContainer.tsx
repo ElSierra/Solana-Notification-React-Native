@@ -291,7 +291,7 @@ const WalletContainer: React.FC<WalletContainerProps> = ({
                     color: textColor,
                   }}
                 >
-                  {walletBalanceUSD ? formatUsd(walletBalanceUSD) : "--"}
+                  {walletBalanceUSD ? formatUsd(walletBalanceUSD + (usdcBalance||0) + (usdtBalance||0)) : "--"}
                 </Text>
               </View>
               <Animated.Text
