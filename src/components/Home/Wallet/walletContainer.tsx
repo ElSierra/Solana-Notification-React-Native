@@ -24,7 +24,7 @@ import * as WebBrowser from "expo-web-browser";
 import { useNavigation } from "@react-navigation/native";
 import { HomeNavigationProp } from "../../../../types/navigation";
 import ReanimatedSwipeable from "react-native-gesture-handler/ReanimatedSwipeable";
-import { TrashIcon } from "../../global/icons";
+import { LinkIcon, TrashIcon } from "../../global/icons";
 import { emojis } from "../../../data/emoji";
 import { useWalletStore } from "../../../store/wallet";
 import { useIsDarkMode } from "../../../hooks/getMode";
@@ -124,6 +124,9 @@ const WalletContainer: React.FC<WalletContainerProps> = ({
 
     // navigation.navigate("ViewWallet", { address: walletAddress });
   };
+  const navigateToSolScan = () => {
+    navigation.navigate("ViewWallet", { address: walletAddress });
+  };
   const handleDeleteWallet = () => {
     console.log("delete wallet");
     containerDrag.value = withTiming(-width, { duration: 100 }, (finished) => {
@@ -140,6 +143,12 @@ const WalletContainer: React.FC<WalletContainerProps> = ({
   };
   const scale = useSharedValue(1);
   const opacity = useSharedValue(1);
+  const viewSolScanOpacity = useSharedValue(1); 
+  const animatedTextStyle = useAnimatedStyle(() => {
+    return {
+      height: textHeight.value,
+    };
+  });
 
   useAnimatedReaction(
     () => containerDrag.value,
@@ -164,11 +173,32 @@ const WalletContainer: React.FC<WalletContainerProps> = ({
       runOnJS(handleOpenWallet)();
     });
 
+  const openSolScan = Gesture.Tap()
+    .onBegin(() => {
+      "worklet";
+      viewSolScanOpacity.value = withTiming(0,{
+        duration:100
+      });
+
+    })
+    .onEnd(() => {
+      "worklet";
+      viewSolScanOpacity.value = withTiming(1,undefined,()=>{
+        runOnJS(navigateToSolScan)();
+      });
+    
+     
+    }).onFinalize(() => {
+      "worklet";
+      viewSolScanOpacity.value = withTiming(1);
+    }
+    );
+
   useAnimatedReaction(
     () => isOpened,
     (value) => {
       if (value) {
-        containerHeight.value = withTiming(135, { duration: 150 }, () => {
+        containerHeight.value = withTiming(150, { duration: 150 }, () => {
           textHeight.value = withTiming(30, { duration: 150 });
           runOnJS(setOneline)(false);
         });
@@ -181,12 +211,13 @@ const WalletContainer: React.FC<WalletContainerProps> = ({
     }
   );
   const textColor = isDarkMode ? "white" : "black";
-
-  const animatedTextStyle = useAnimatedStyle(() => {
+ 
+  const viewSolScanButtonStyle = useAnimatedStyle(() => {
     return {
-      height: textHeight.value,
+      opacity: viewSolScanOpacity.value,
     };
-  });
+  }
+  );
   return (
     <ReanimatedSwipeable
       containerStyle={[styles.swipeable, containerAnimStyle]}
@@ -244,7 +275,7 @@ const WalletContainer: React.FC<WalletContainerProps> = ({
               style={{
                 flex: 1,
                 marginLeft: 10,
-                justifyContent: "space-evenly",
+
                 height: 60,
               }}
             >
@@ -291,7 +322,13 @@ const WalletContainer: React.FC<WalletContainerProps> = ({
                     color: textColor,
                   }}
                 >
-                  {walletBalanceUSD ? formatUsd(walletBalanceUSD + (usdcBalance||0) + (usdtBalance||0)) : "--"}
+                  {walletBalanceUSD
+                    ? formatUsd(
+                        walletBalanceUSD +
+                          (usdcBalance || 0) +
+                          (usdtBalance || 0)
+                      )
+                    : "--"}
                 </Text>
               </View>
               <Animated.Text
@@ -308,7 +345,50 @@ const WalletContainer: React.FC<WalletContainerProps> = ({
               >
                 {walletAddress}
               </Animated.Text>
-              {!oneLine && <TokenContainer isExpanded={!oneLine} usdt={usdtBalance||0} usdc={usdcBalance||0} />}
+              {!oneLine && (
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    width: "100%",
+
+                    alignItems: "center",
+                  }}
+                >
+                  <View>
+                    <TokenContainer
+                      isExpanded={!oneLine}
+                      usdt={usdtBalance || 0}
+                      usdc={usdcBalance || 0}
+                    />
+                  </View>
+
+                  <GestureDetector  gesture={openSolScan}>
+                    <Animated.View
+                      style={[{
+                        padding: 8,
+                        backgroundColor: "#DF5900FF",
+                        borderRadius: 30,
+                        justifyContent: "center",
+                        alignItems: "center",
+                        flexDirection: "row",
+                        gap: 4,
+                      },viewSolScanButtonStyle]}
+                    >
+                      <LinkIcon size={20} color="white" />
+                      <Text
+                        style={{
+                          color: textColor,
+                          fontFamily: "Satoshi-Bold",
+                          borderColor: textColor,
+                        }}
+                      >
+                        Solscan
+                      </Text>
+                    </Animated.View>
+                  </GestureDetector>
+                </View>
+              )}
             </View>
           </Animated.View>
         </Animated.View>

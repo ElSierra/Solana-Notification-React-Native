@@ -18,9 +18,9 @@ const NewLinear = () => {
 
   const getColorArray = useMemo(() => {
     if (walletAdjustSol === "up") {
-      return dark ? ["#002327FF", "#00000000"] : ["#E6FCFEFF", "#FFFFFFFF"];
+      return dark ? ["#002327FF", "#00000000"] : ["#E6FCFEFF", "#FFFFFF00"];
     }
-    return dark ? ["#270600FF", "#000000FF"] : ["#FEE6E6FF", "#FFFFFFFF"];
+    return dark ? ["#270600FF", "#00000000"] : ["#FEE6E6FF", "#FFFFFF00"];
   }, [walletAdjustSol, dark]);
   return (
     <View

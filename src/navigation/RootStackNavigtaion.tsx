@@ -58,6 +58,9 @@ export const RootStack = createNativeStackNavigator({
         presentation: "formSheet",
         headerShown: false,
         sheetAllowedDetents: [0.9],
+        
+        //prevent user from dragging the sheet
+        gestureEnabled: false,
         sheetCornerRadius: 20,
         sheetExpandsWhenScrolledToEdge: true,
         sheetElevation: 0,

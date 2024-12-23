@@ -1,4 +1,4 @@
-import { View, Text, useWindowDimensions, Button } from "react-native";
+import { View, Text, useWindowDimensions, Button, Pressable, ActivityIndicator } from "react-native";
 import React, { useEffect } from "react";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 
@@ -18,6 +18,7 @@ import { formatUsd } from "../util/formatUsd";
 import { OneSignal } from "react-native-onesignal";
 import { NotificationContainer } from "../components/Notification/List/NotificationContainer";
 import { useIsFingerPrintSuccess } from "../store/auth";
+import axios from "axios";
 
 export default function Home() {
   const bottomTabHeight = useBottomTabBarHeight();
@@ -45,6 +46,16 @@ export default function Home() {
     queryFn: () =>
       apiClient.get("/wallets?recheck").then((res) => res.data.data),
   });
+
+  const {  data:priceData, isFetching:isFetchingPrice, refetch:refetchPrice } = useQuery({
+   
+
+    queryKey: ["price"],
+    queryFn: () =>
+      axios.get("https://api.coingecko.com/api/v3/simple/price?ids=solana&vs_currencies=usd").then((res) => res),
+  });
+
+  console.log("🚀 ~ file: Home.tsx:57 ~ Home ~ priceData:", priceData)
 
   console.log("👀", data);
   console.log("🚀 ~ file: Home.tsx:54 ~ Home ~ error:", error);
@@ -108,6 +119,17 @@ export default function Home() {
         ]}
       >
         <>
+        <Pressable onPress={()=>{refetchPrice ()}} style={{ flexDirection: "row", justifyContent: "center",alignItems:"center", paddingHorizontal:8,paddingVertical:4,marginBottom:20, backgroundColor:"#007B42FF",borderRadius:999 }}>
+         {isFetchingPrice ? <ActivityIndicator size={20}/>: <Text
+            style={{
+              fontFamily: "Satoshi-Bold",
+              color: textColor,
+              fontSize: 14,
+            }}
+          >
+            SOL: {priceData?.data?.solana.usd} USD
+          </Text>}
+          </Pressable>
           {isFingerPrint ? (
             <Text
               style={{
